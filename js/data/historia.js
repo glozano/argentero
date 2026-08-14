@@ -285,7 +285,9 @@ export const HISTORIA = [
       contexto: 'Afuera hay gente reclamando y también gente buscando pelea. Tu familia te pide que no te expongas.',
       opciones: [
         { texto: 'Me quedo adentro', efectos: { felicidad: -3 }, set: { habilidad: 'prudencia', marca: 'se-resguardo' }, resultado: 'Cerraste la persiana y cuidaste a los tuyos. No fue cobardía: fue llegar entero al día siguiente.' },
-        { texto: 'Salgo igual', efectos: { salud: -12, felicidad: -8 }, set: { marca: 'golpe-calles' }, resultado: 'Saliste y te cagaron a trompadas en la esquina. Volviste golpeado, con bronca y una historia que nadie quería escuchar completa.' }
+        { texto: 'Salgo igual', efectos: { salud: -12, felicidad: -8 }, set: { marca: 'golpe-calles' }, resultado: 'Saliste y te cagaron a trompadas en la esquina. Volviste golpeado, con bronca y una historia que nadie quería escuchar completa.' },
+        { texto: 'Ayudo a repartir comida y vuelvo temprano', efectos: { salud: -2, felicidad: 2 }, set: { marca: 'ayuda-en-crisis' }, resultado: 'Saliste para ayudar y volviste antes de que anocheciera. La calle seguía peligrosa, pero no estabas mirando desde lejos.' },
+        { texto: 'Me voy a la casa de un familiar', efectos: { salud: 1, felicidad: -1 }, set: { marca: 'se-resguarda-familiar' }, resultado: 'Te mudaste por unos días a un lugar más tranquilo. La crisis no terminó, pero la familia armó un refugio.' }
       ]
     }
   },

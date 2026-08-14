@@ -35,31 +35,38 @@
 
     <!-- VIDA -->
     <section id="pantalla-vida" class="pantalla">
-      <div class="hud">
-        <div class="quien">
-          <span class="nombre" id="hud-nombre"></span>
-          <span class="anio-actual" id="hud-anio"></span>
-        </div>
-        <div class="barras">
-          <div class="barra plata" id="barra-plata">
-            <div class="etiqueta"><span>💵 Plata</span><b>0</b></div>
-            <div class="pista"><div class="relleno" style="width:0%"></div></div>
+      <div class="vida-layout">
+        <aside class="vida-sidebar">
+          <div class="hud">
+            <div class="quien">
+              <span class="nombre" id="hud-nombre"></span>
+              <span class="anio-actual" id="hud-anio"></span>
+            </div>
+            <div class="barras">
+              <div class="barra plata" id="barra-plata">
+                <div class="etiqueta"><span>💵 Plata</span><b>0</b></div>
+                <div class="pista"><div class="relleno" style="width:0%"></div></div>
+              </div>
+              <div class="barra salud" id="barra-salud">
+                <div class="etiqueta"><span>❤️ Salud</span><b>0</b></div>
+                <div class="pista"><div class="relleno" style="width:0%"></div></div>
+              </div>
+              <div class="barra felicidad" id="barra-felicidad">
+                <div class="etiqueta"><span>😄 Felicidad</span><b>0</b></div>
+                <div class="pista"><div class="relleno" style="width:0%"></div></div>
+              </div>
+            </div>
           </div>
-          <div class="barra salud" id="barra-salud">
-            <div class="etiqueta"><span>❤️ Salud</span><b>0</b></div>
-            <div class="pista"><div class="relleno" style="width:0%"></div></div>
+          <button class="perfil-toggle" id="btn-perfil-toggle" aria-expanded="true" aria-controls="perfil-vida">Ocultar ficha ▲</button>
+          <aside id="perfil-vida" class="perfil-vida" aria-label="Ficha del personaje"></aside>
+          <div class="controles-vida">
+            <button class="boton secundario chico" id="btn-velocidad">▶ auto</button>
           </div>
-          <div class="barra felicidad" id="barra-felicidad">
-            <div class="etiqueta"><span>😄 Felicidad</span><b>0</b></div>
-            <div class="pista"><div class="relleno" style="width:0%"></div></div>
-          </div>
-        </div>
-      </div>
-      <aside id="perfil-vida" class="perfil-vida" aria-label="Ficha del personaje"></aside>
-      <div id="timeline" class="timeline"></div>
-      <button class="boton btn-seguir" id="btn-seguir">Seguir ▸</button>
-      <div class="controles-vida">
-        <button class="boton secundario chico" id="btn-velocidad">▶ auto</button>
+        </aside>
+        <main class="vida-main">
+          <div id="timeline" class="timeline"></div>
+          <section id="accion-vida" class="accion-vida" aria-live="polite"></section>
+        </main>
       </div>
     </section>
 
@@ -72,27 +79,6 @@
       </div>
     </section>
 
-  </div>
-
-  <!-- OVERLAY: tirada de dado -->
-  <div id="overlay-dado" class="overlay">
-    <div class="caja">
-      <h3></h3>
-      <p class="intro"></p>
-      <div class="dado-zona dado-wrap"></div>
-      <div class="dado-cuenta"></div>
-      <div class="resultado-texto"></div>
-      <button class="boton chico" id="btn-seguir-dado" style="display:none;margin-top:12px">Seguir ▸</button>
-    </div>
-  </div>
-
-  <!-- OVERLAY: decisión -->
-  <div id="overlay-decision" class="overlay">
-    <div class="caja">
-      <h3></h3>
-      <p class="intro"></p>
-      <div class="opciones"></div>
-    </div>
   </div>
 
   <div id="aviso-copiado" class="aviso-copiado">Copiado ✓</div>

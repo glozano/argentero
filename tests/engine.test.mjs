@@ -112,11 +112,13 @@ test('las historias pueden abrir decisiones cotidianas y conservar sus consecuen
     nombre: 'Carlos', apellido: 'Gómez', cuadro: 'Belgrano', lugar: 'Córdoba, Córdoba',
   };
   let decisionCalles;
+  const salir = HISTORIA.find(ev => ev.id === 'quilombo-calles-2001').decision.opciones
+    .find(op => op.set?.marca === 'golpe-calles');
   const vida = await simularVida(nacimiento, crearRng(40510), {
     onDecision: async dec => {
       if (dec.pregunta.includes('quedás adentro')) {
         decisionCalles = dec;
-        return dec.opciones[1];
+        return salir;
       }
       return dec.opciones[0];
     },
@@ -128,9 +130,9 @@ test('las historias pueden abrir decisiones cotidianas y conservar sus consecuen
   assert.ok(vida.momentos.some(m => m.tipo === 'decision' && m.titulo.includes('quedás adentro')));
 });
 
-test('cada decisión tiene un conjunto múltiple y la interfaz recibe como máximo dos', () => {
-  assert.ok(DECISIONES.every(dec => dec.opciones.length >= 2));
-  assert.ok(DECISIONES.some(dec => dec.opciones.length > 2));
+test('cada decisión tiene al menos cuatro opciones', () => {
+  const decisionesHistoria = HISTORIA.filter(ev => ev.decision).map(ev => ev.decision);
+  assert.ok([...DECISIONES, ...decisionesHistoria].every(dec => dec.opciones.length >= 4));
   const colimba = DECISIONES.find(dec => dec.id === 'colimba');
   assert.equal(colimba.etapa, 'juventud');
   assert.equal(colimba.cond.edadMin, 18);

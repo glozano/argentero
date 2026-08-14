@@ -69,6 +69,13 @@ function init() {
     ui.setAuto(auto);
     $('#btn-velocidad').textContent = auto ? '⏸ manual' : '▶ auto';
   };
+
+  $('#btn-perfil-toggle').onclick = () => {
+    const sidebar = document.querySelector('.vida-sidebar');
+    const collapsed = sidebar.classList.toggle('colapsado');
+    $('#btn-perfil-toggle').textContent = collapsed ? 'Mostrar ficha ▼' : 'Ocultar ficha ▲';
+    $('#btn-perfil-toggle').setAttribute('aria-expanded', String(!collapsed));
+  };
 }
 
 init();

@@ -137,8 +137,29 @@ body::before { /* trama sutil de fondo */
   text-transform: uppercase;
 }
 .perfil-grid b { display: block; font-size: 13px; margin-top: 1px; overflow-wrap: anywhere; }
+.perfil-toggle { display: none; }
 
-.timeline { padding: 8px 0 84px; } /* aire para el botón Seguir fijo */
+.vida-main { min-width: 0; }
+.accion-vida {
+  display: none; background: var(--carta); border: 1px solid var(--celeste-osc);
+  border-radius: var(--radio); padding: 15px; box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.22);
+}
+.accion-vida.activo { display: block; }
+.accion-vida h3 { font-size: 17px; margin: 3px 0 4px; }
+.accion-kicker {
+  color: var(--celeste); font-size: 11px; font-weight: 800; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.accion-intro, .accion-texto { color: var(--texto-2); font-size: 14px; margin: 4px 0 10px; }
+.accion-vida .dado-wrap { margin: 8px auto; }
+.accion-vida .dado { width: 68px; height: 68px; }
+.accion-vida .dado .cara-num { font-size: 28px; }
+.accion-vida .dado-cuenta { font-size: 13px; }
+.accion-vida .resultado-texto { font-size: 15px; margin: 7px 0 10px; min-height: 20px; }
+.accion-vida .resultado-texto.crit { color: var(--sol); font-weight: 800; }
+.accion-vida .resultado-texto.pifia { color: var(--fallo); font-weight: 800; }
+
+.timeline { padding: 8px 0 84px; } /* aire para el panel de acción */
 .etapa-titulo {
   display: flex; align-items: center; gap: 10px; margin: 22px 0 8px;
   font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--celeste);
@@ -175,24 +196,6 @@ body::before { /* trama sutil de fondo */
 }
 .chip.pos { color: var(--exito); }
 .chip.neg { color: var(--fallo); }
-
-/* overlay del dado en tiradas */
-.overlay {
-  position: fixed; inset: 0; z-index: 50; display: none;
-  align-items: center; justify-content: center; padding: 20px;
-  background: rgba(11, 12, 14, 0.9);
-}
-.overlay.visible { display: flex; }
-.overlay .caja {
-  background: var(--carta); border: 1px solid var(--borde); border-radius: var(--radio);
-  max-width: 420px; width: 100%; padding: 22px; text-align: center;
-  animation: aparecer 0.25s ease;
-}
-.overlay .caja h3 { font-size: 19px; margin-bottom: 4px; }
-.overlay .caja .intro { color: var(--texto-2); font-size: 14px; }
-.overlay .caja .resultado-texto { font-size: 16px; margin: 10px 0 4px; min-height: 24px; }
-.overlay .caja .resultado-texto.crit { color: var(--sol); font-weight: 800; }
-.overlay .caja .resultado-texto.pifia { color: var(--fallo); font-weight: 800; }
 
 /* decisiones */
 .opciones { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
@@ -245,14 +248,46 @@ body::before { /* trama sutil de fondo */
 }
 .aviso-copiado.visible { display: block; animation: aparecer 0.25s ease; }
 
-.btn-seguir {
-  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-  z-index: 40; display: none; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.55), 0 4px 24px rgba(117, 170, 219, 0.3);
-}
-.btn-seguir.visible { display: inline-block; animation: aparecer 0.2s ease; }
-.controles-vida { position: fixed; bottom: 16px; right: 16px; z-index: 40; }
+.controles-vida { margin-top: 14px; }
 .controles-vida .boton { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5); }
 
 @media (min-width: 560px) {
   .portada h1 { font-size: 64px; }
+}
+
+@media (max-width: 759px) {
+  .vida-sidebar {
+    position: sticky; top: 0; z-index: 30; background: rgba(11, 12, 14, 0.98);
+    padding-bottom: 8px; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+  }
+  .vida-sidebar .hud { position: static; }
+  .perfil-toggle {
+    display: block; width: 100%; border: 0; border-top: 1px solid var(--borde);
+    background: transparent; color: var(--celeste); cursor: pointer; font: inherit;
+    font-size: 12px; font-weight: 800; padding: 8px 0 2px; text-align: left;
+  }
+  .vida-sidebar.colapsado .perfil-vida,
+  .vida-sidebar.colapsado .controles-vida { display: none; }
+  .vida-main .timeline { padding-bottom: 260px; }
+  .accion-vida {
+    position: fixed; left: 50%; bottom: 0; z-index: 25; width: min(calc(100vw - 32px), 520px);
+    max-height: min(48dvh, 360px); overflow-y: auto; transform: translateX(-50%); margin: 0;
+    box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.5);
+  }
+}
+
+@media (min-width: 760px) {
+  #app { max-width: none; height: 100dvh; padding: 16px 24px 24px; overflow: hidden; }
+  #pantalla-vida.activa { height: 100%; }
+  .vida-layout {
+    display: grid; grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr);
+    gap: 20px; height: 100%; min-height: 0;
+  }
+  .vida-sidebar {
+    min-width: 0; overflow-y: auto; padding-right: 16px; border-right: 1px solid var(--borde);
+  }
+  .vida-sidebar .hud { position: static; }
+  .vida-main { display: flex; flex-direction: column; min-height: 0; padding-left: 0; }
+  .vida-main .timeline { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 12px 18px 0; }
+  .accion-vida { flex: 0 0 auto; position: static; margin-top: 10px; }
 }

@@ -9,17 +9,31 @@ export let AUTO = false;  // false: el jugador avanza con "Seguir"
 
 const espera = (ms) => new Promise(r => setTimeout(r, ms / VELOCIDAD));
 
-// pausa entre momentos: en manual espera el toque; en auto, el reloj
-function pausa(ms) {
-  if (AUTO) return espera(ms);
-  return esperarSeguir();
+// pausa entre momentos: en manual espera el panel; en auto, el reloj
+function pausa(ms, detalle = '') {
+  if (AUTO) {
+    mostrarPanel(`
+      <div class="accion-kicker">Resultado</div>
+      <div class="accion-texto">${detalle || 'La vida sigue.'}</div>`);
+    return espera(ms);
+  }
+  return esperarSeguir(detalle);
 }
 
-function esperarSeguir() {
+function mostrarPanel(html) {
+  const panel = $('#accion-vida');
+  panel.innerHTML = html;
+  panel.classList.add('activo');
+  return panel;
+}
+
+function esperarSeguir(detalle = '') {
   return new Promise(resolve => {
-    const b = $('#btn-seguir');
-    b.classList.add('visible');
-    b.onclick = () => { b.classList.remove('visible'); resolve(); };
+    const panel = mostrarPanel(`
+      <div class="accion-kicker">Resultado</div>
+      <div class="accion-texto">${detalle || 'La vida sigue. Elegí cuándo avanzar.'}</div>
+      <button class="boton chico" id="btn-seguir">Continuar ▸</button>`);
+    panel.querySelector('#btn-seguir').onclick = resolve;
   });
 }
 
@@ -175,7 +189,7 @@ export async function renderMomento(m, nacimiento) {
   const meta = `${m.anio} · ${m.edad} años`;
 
   if (m.tipo === 'tirada') {
-    await tiradaConOverlay(m);
+    await tiradaConPanel(m);
     const t = m.tirada;
     const cls = t.crit === 12 ? 'crit' : t.crit === 1 ? 'pifia' : t.exito ? 'exito' : 'fallo';
     tl.insertAdjacentHTML('beforeend', `
@@ -194,7 +208,7 @@ export async function renderMomento(m, nacimiento) {
         <div class="texto">${m.texto}</div>
         ${m.tono === 'sobrio' ? '' : chipsEfectos(m.efectos)}
       </div>`);
-    await pausa(760);
+    await pausa(760, m.texto);
   } else if (m.tipo === 'decision') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento decision-log">
@@ -203,69 +217,72 @@ export async function renderMomento(m, nacimiento) {
         ${m.texto ? `<div class="texto" style="margin-top:4px">${m.texto}</div>` : ''}
         ${chipsEfectos(m.efectos)}
       </div>`);
-    await pausa(700);
+    await pausa(700, m.texto);
   } else if (m.tipo === 'muerte') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento muerte">
         <div class="meta">${m.anio} · ${m.edad} años</div>
         <div class="texto">${m.texto}</div>
       </div>`);
-    await pausa(1400);
+    await pausa(1400, m.texto);
   } else if (m.tipo === 'hito') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento hito">
         <div class="meta">${meta}</div>
         <div class="texto">${m.texto}</div>
       </div>`);
-    await pausa(900);
+    await pausa(900, m.texto);
   }
 
   $('#hud-anio').textContent = m.anio;
   if (m.stats) pintarBarras(m.stats);
   pintarPerfil(nacimiento, m.estado);
-  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  if (tl.scrollHeight > tl.clientHeight) tl.scrollTo({ top: tl.scrollHeight, behavior: 'smooth' });
+  else window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
-async function tiradaConOverlay(m) {
-  const ov = $('#overlay-dado');
-  ov.querySelector('h3').textContent = m.titulo;
-  ov.querySelector('.intro').textContent = m.intro || '';
-  const resTxt = ov.querySelector('.resultado-texto');
-  resTxt.textContent = ''; resTxt.className = 'resultado-texto';
-  const cuenta = ov.querySelector('.dado-cuenta');
-  cuenta.innerHTML = '';
-  ov.classList.add('visible');
-  await animarDado(ov.querySelector('.dado-zona'), m.tirada.d);
-  cuenta.innerHTML = cuentaHtml(m.tirada);
+async function tiradaConPanel(m) {
+  const panel = mostrarPanel(`
+    <div class="accion-kicker">Tirada de d12</div>
+    <h3>${m.titulo}</h3>
+    ${m.intro ? `<p class="accion-intro">${m.intro}</p>` : ''}
+    <div class="dado-zona accion-dado dado-wrap"></div>
+    <div class="dado-cuenta"></div>
+    <div class="resultado-texto"></div>
+    <button class="boton chico" id="btn-tirar-dado">Tirar dado</button>`);
+  const lanzar = panel.querySelector('#btn-tirar-dado');
+  if (!AUTO) await new Promise(resolve => { lanzar.onclick = resolve; });
+  await animarDado(panel.querySelector('.dado-zona'), m.tirada.d);
+  panel.querySelector('.dado-cuenta').innerHTML = cuentaHtml(m.tirada);
+  const resTxt = panel.querySelector('.resultado-texto');
   if (m.tirada.crit === 12) { resTxt.textContent = '¡DOCE!'; resTxt.classList.add('crit'); }
   else if (m.tirada.crit === 1) { resTxt.textContent = 'Uno. Uf.'; resTxt.classList.add('pifia'); }
   else resTxt.textContent = m.tirada.exito ? '✓ Salió bien' : '✗ No salió';
+  lanzar.textContent = 'Continuar ▸';
   if (AUTO) {
     await espera(1250);
   } else {
-    const b = $('#btn-seguir-dado');
-    b.style.display = 'inline-block';
-    await new Promise(r => { b.onclick = () => { b.style.display = 'none'; r(); }; });
+    await new Promise(resolve => { lanzar.onclick = resolve; });
   }
-  ov.classList.remove('visible');
 }
 
 // ---------- DECISIONES ----------
 export function pedirDecision(dec) {
   return new Promise(resolve => {
-    const ov = $('#overlay-decision');
-    ov.querySelector('h3').textContent = dec.pregunta;
-    ov.querySelector('.intro').textContent = dec.contexto || '';
-    const cont = ov.querySelector('.opciones');
+    const panel = mostrarPanel(`
+      <div class="accion-kicker">Decisión · ${dec.edad} años</div>
+      <h3>${dec.pregunta}</h3>
+      <p class="accion-intro">${dec.contexto || ''}</p>
+      <div class="opciones"></div>`);
+    const cont = panel.querySelector('.opciones');
     cont.innerHTML = '';
     dec.opciones.slice(0, 2).forEach(op => {
       const btn = document.createElement('button');
       btn.className = 'opcion';
       btn.innerHTML = `<span class="texto-op">${op.texto}</span>`;
-      btn.onclick = () => { ov.classList.remove('visible'); resolve(op); };
+      btn.onclick = () => resolve(op);
       cont.appendChild(btn);
     });
-    ov.classList.add('visible');
   });
 }
 

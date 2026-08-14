@@ -657,7 +657,9 @@ export const DECISIONES = [
     contexto: 'En casa la plata no alcanza y en el corralón buscan pibe. El colegio no paga; el corralón, algo.',
     opciones: [
       { texto: 'Sigo estudiando, aunque cueste', efectos: { plata: -8, felicidad: 5 }, set: { habilidad: 'estudio', marca: 'sigue-estudiando' }, resultado: 'Elegiste el pizarrón con la heladera flaca. Apostaste a largo plazo en un país cortoplacista: se banca.' },
-      { texto: 'Entro a laburar, la casa manda', efectos: { plata: 10, felicidad: -5 }, set: { laburo: 'en negro', habilidad: 'oficio' }, resultado: 'A los quince ya parás la olla. Nadie te va a dar un diploma por esto, y es una injusticia.' }
+      { texto: 'Entro a laburar, la casa manda', efectos: { plata: 10, felicidad: -5 }, set: { laburo: 'en negro', habilidad: 'oficio' }, resultado: 'A los quince ya parás la olla. Nadie te va a dar un diploma por esto, y es una injusticia.' },
+      { texto: 'Busco una beca y sigo estudiando', efectos: { plata: -4, felicidad: 2 }, set: { habilidad: 'estudio', marca: 'busca-beca' }, resultado: 'Conseguiste una ayuda y seguiste en el aula. No resolvió todo, pero compró tiempo para que el futuro no quedara afuera.' },
+      { texto: 'Hago medio turno y mantengo el colegio', efectos: { plata: 4, felicidad: -2 }, set: { laburo: 'medio turno', habilidad: 'oficio', marca: 'estudia-y-trabaja' }, resultado: 'Trabajaste y estudiaste a la vez. Llegabas cansado, pero mantuviste abiertas dos puertas.' }
     ]
   },
 
@@ -670,7 +672,9 @@ export const DECISIONES = [
     contexto: 'Ahora tenés otras responsabilidades. Retomar cuesta tiempo y plata, pero dejarlo atrás también tiene un costo.',
     opciones: [
       { texto: 'Vuelvo a estudiar', efectos: { plata: -8, felicidad: 6 }, set: { educacion: 'secundaria', habilidad: 'estudio', marca: 'retomo-estudios' }, resultado: 'Volviste al aula. No recuperaste los años, pero recuperaste una puerta. Más adelante la facultad vuelve a ser una opción.' },
-      { texto: 'Sigo trabajando', efectos: { plata: 8, felicidad: -4 }, set: { habilidad: 'oficio', marca: 'dejo-estudios' }, resultado: 'Elegiste el ingreso de hoy. El oficio crece, y el título queda como una pregunta que la vida puede volver a hacerte.' }
+      { texto: 'Sigo trabajando', efectos: { plata: 8, felicidad: -4 }, set: { habilidad: 'oficio', marca: 'dejo-estudios' }, resultado: 'Elegiste el ingreso de hoy. El oficio crece, y el título queda como una pregunta que la vida puede volver a hacerte.' },
+      { texto: 'Vuelvo de noche y trabajo de día', efectos: { plata: -4, felicidad: 2 }, set: { educacion: 'secundaria', habilidad: 'estudio', marca: 'estudia-de-noche' }, resultado: 'Acomodaste el aula después del trabajo. El cansancio fue real, pero también lo fue la segunda oportunidad.' },
+      { texto: 'Hago un curso corto y sigo trabajando', efectos: { plata: 3, felicidad: 1 }, set: { habilidad: 'oficio', marca: 'curso-corto' }, resultado: 'No volviste al colegio, pero sumaste una herramienta concreta. El oficio dejó de ser solo supervivencia.' }
     ]
   },
 
@@ -683,7 +687,9 @@ export const DECISIONES = [
     contexto: 'Sorteo por los últimos números del documento. Un año de tu vida en manos del azar estatal, que ya te conoce.',
     opciones: [
       { texto: 'La hago y listo', efectos: { felicidad: -8, salud: -4 }, set: {}, resultado: 'Un año de baldear cuarteles, pelar papas y aprender a fumar. "La colimba te hace hombre", decían los que no la hicieron.' },
-      { texto: 'Intento zafar en la revisación', efectos: { felicidad: 3 }, set: {}, resultado: 'Pie plano, un soplo dudoso, un número bajo: zafaste. El azar estatal, por una vez, jugó para vos.' }
+      { texto: 'Intento zafar en la revisación', efectos: { felicidad: 3 }, set: {}, resultado: 'Pie plano, un soplo dudoso, un número bajo: zafaste. El azar estatal, por una vez, jugó para vos.' },
+      { texto: 'Pido un destino administrativo', efectos: { felicidad: -2, salud: 1 }, set: { marca: 'destino-administrativo' }, resultado: 'Terminaste detrás de un escritorio. No fue cómodo, pero tampoco fue el barro del cuartel.' },
+      { texto: 'Busco una prórroga', efectos: { felicidad: 1, plata: -2 }, set: { marca: 'prorroga-colimba' }, resultado: 'Ganaste unos meses y una cuota de incertidumbre. La colimba quedó pendiente, como casi todo trámite estatal.' }
     ]
   },
 
@@ -695,7 +701,9 @@ export const DECISIONES = [
     contexto: 'Salió tu número. Tu viejo conoce a un coronel amigo de la familia: una llamada y quedás "afectado a tareas administrativas".',
     opciones: [
       { texto: 'Que llame al coronel', efectos: { felicidad: 5 }, set: {}, resultado: 'Hiciste la colimba en una oficina con estufa, cebándole mate a un suboficial. El acomodo: la institución argentina más eficiente.' },
-      { texto: 'La hago como cualquiera', efectos: { felicidad: -6, salud: -4 }, set: {}, resultado: 'Un año de cuartel como todos. En tu familia no lo entendieron; en el cuartel, tampoco.' }
+      { texto: 'La hago como cualquiera', efectos: { felicidad: -6, salud: -4 }, set: {}, resultado: 'Un año de cuartel como todos. En tu familia no lo entendieron; en el cuartel, tampoco.' },
+      { texto: 'Pido un destino cerca de casa', efectos: { felicidad: 4 }, set: { marca: 'acomodo-cerca' }, resultado: 'El contacto consiguió un destino razonable. El privilegio no desapareció, solo cambió de oficina.' },
+      { texto: 'Rechazo el favor y cumplo igual', efectos: { felicidad: -4, salud: -3 }, set: { marca: 'rechaza-acomodo' }, resultado: 'Dejaste pasar la ventaja y fuiste al cuartel. Tu familia lo llamó orgullo; vos lo llamaste decisión.' }
     ]
   },
 
@@ -708,7 +716,9 @@ export const DECISIONES = [
     contexto: 'Son años de plomo. Compañeros tuyos ya no están y nadie pregunta en voz alta. Hay un pasaje posible a México o a España.',
     opciones: [
       { texto: 'Me voy al exilio', efectos: { felicidad: -12, plata: -5 }, set: { exilio: 'México' }, resultado: 'Saliste con lo puesto y el corazón apretado. El exilio salva la vida y parte la historia en dos.' },
-      { texto: 'Me quedo', efectos: { felicidad: -8, salud: -5 }, set: {}, resultado: 'Te quedaste, con miedo y en silencio, como tantos. Esos años dejaron marcas que no se cuentan enteras.' }
+      { texto: 'Me quedo', efectos: { felicidad: -8, salud: -5 }, set: {}, resultado: 'Te quedaste, con miedo y en silencio, como tantos. Esos años dejaron marcas que no se cuentan enteras.' },
+      { texto: 'Me voy a España con amigos', efectos: { felicidad: -10, plata: -8 }, set: { exilio: 'España' }, resultado: 'Cruzaste el océano con ayuda de amigos. El exilio te protegió, pero dejó una distancia difícil de explicar.' },
+      { texto: 'Me escondo y espero', efectos: { felicidad: -6, salud: -3 }, set: { marca: 'se-esconde' }, resultado: 'Bajaste el perfil y esperaste. Sobrevivir también fue una forma de resistencia silenciosa.' }
     ]
   },
 
@@ -721,7 +731,9 @@ export const DECISIONES = [
     contexto: 'Tu primo desde Barcelona te dice que allá "está todo bien". Acá no hay laburo ni para el que madruga.',
     opciones: [
       { texto: 'Me voy a España', efectos: { plata: 10, felicidad: -15 }, set: { exilio: 'España' }, resultado: 'Ezeiza, un bolso y la promesa de volver. Nunca se vuelve del todo.' },
-      { texto: 'Me quedo, acá está mi gente', efectos: { felicidad: 5, plata: -10 }, set: {}, resultado: 'Te quedaste a remarla. Alguien tiene que apagar la luz... o no.' }
+      { texto: 'Me quedo, acá está mi gente', efectos: { felicidad: 5, plata: -10 }, set: {}, resultado: 'Te quedaste a remarla. Alguien tiene que apagar la luz... o no.' },
+      { texto: 'Me voy a Italia con la familia', efectos: { plata: 8, felicidad: -12 }, set: { exilio: 'Italia' }, resultado: 'La familia armó las valijas y cruzó el océano. El ingreso mejoró, pero las reuniones quedaron en llamadas.' },
+      { texto: 'Me quedo y armo algo con amigos', efectos: { plata: -6, felicidad: 3 }, set: { habilidad: 'emprendimiento', marca: 'emprende-crisis' }, resultado: 'Pusiste lo poco que había en un proyecto común. No sobró plata, pero apareció una red para sostenerse.' }
     ]
   },
 
@@ -734,7 +746,9 @@ export const DECISIONES = [
     contexto: 'Medio grupo de amigos ya está en Madrid y el otro medio junta para el pasaje. Tu sueldo, pasado a dólares, da risa. O llanto.',
     opciones: [
       { texto: 'Me voy a Madrid', efectos: { plata: 12, felicidad: -10 }, set: { exilio: 'España' }, resultado: 'Cobrás en euros y extrañás en pesos. Los asados por videollamada son un género del duelo.' },
-      { texto: 'Me quedo a bancarla', efectos: { felicidad: 4, plata: -8 }, set: {}, resultado: 'Te quedaste, entre la bronca y el arraigo. Alguien tiene que cebar los mates, y esta vez sos vos.' }
+      { texto: 'Me quedo a bancarla', efectos: { felicidad: 4, plata: -8 }, set: {}, resultado: 'Te quedaste, entre la bronca y el arraigo. Alguien tiene que cebar los mates, y esta vez sos vos.' },
+      { texto: 'Me voy a Chile', efectos: { plata: 10, felicidad: -8 }, set: { exilio: 'Chile' }, resultado: 'Cruzaste la cordillera por una oportunidad. La estabilidad ayudó, pero el desarraigo también cobró su parte.' },
+      { texto: 'Me quedo y me capacito', efectos: { plata: -4, felicidad: 6 }, set: { habilidad: 'estudio', marca: 'se-capacita' }, resultado: 'Invertiste tiempo en aprender algo nuevo. No cambiaste de país, pero sí cambiaste tus opciones.' }
     ]
   },
 
@@ -749,7 +763,8 @@ export const DECISIONES = [
     opciones: [
       { texto: 'En el banco, a interés', efectos: { plata: -6, felicidad: -3 }, set: {}, resultado: 'El interés existía; la inflación, más. Los pesos se achicaron con elegancia, sin escándalo, como se perdía plata antes.' },
       { texto: 'Dólares, por las dudas', efectos: { plata: 8 }, set: {}, resultado: 'Todavía no era deporte nacional, pero vos ya la viste venir. Fundaste una tradición.' },
-      { texto: 'Ladrillos: un lotecito', efectos: { plata: 8, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Un lote en las afueras. Con los años, las afueras se volvieron barrio y el lotecito, patrimonio.' }
+      { texto: 'Ladrillos: un lotecito', efectos: { plata: 8, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Un lote en las afueras. Con los años, las afueras se volvieron barrio y el lotecito, patrimonio.' },
+      { texto: 'Compro herramientas para trabajar', efectos: { plata: -4, felicidad: 6 }, set: { habilidad: 'oficio', marca: 'invierte-oficio' }, resultado: 'Convertiste el ahorro en herramientas. No quedaron guardadas: empezaron a producir.' }
     ]
   },
 
@@ -762,7 +777,8 @@ export const DECISIONES = [
     opciones: [
       { texto: 'Dólares abajo del colchón', efectos: { plata: 12 }, set: {}, resultado: 'El colchón rindió más que cualquier banco. En este país el mueble más rentable es el sommier.' },
       { texto: 'Plazo fijo, como la gente seria', efectos: { plata: -15, felicidad: -8 }, set: {}, resultado: 'La tasa era fabulosa hasta que el plan de turno la hizo cenizas. "El que apuesta al dólar pierde", dijo el ministro. Perdió el que le creyó.' },
-      { texto: 'Ladrillos: un terrenito', efectos: { plata: 8, felicidad: 5 }, set: { propiedad: 'lote' }, resultado: 'El terreno no paga interés pero tampoco se evapora. Lo que se atornilla al suelo, acá, sobrevive.' }
+      { texto: 'Ladrillos: un terrenito', efectos: { plata: 8, felicidad: 5 }, set: { propiedad: 'lote' }, resultado: 'El terreno no paga interés pero tampoco se evapora. Lo que se atornilla al suelo, acá, sobrevive.' },
+      { texto: 'Compro herramientas y hago changas', efectos: { plata: -4, felicidad: 5 }, set: { habilidad: 'oficio', marca: 'compra-herramientas' }, resultado: 'La plata se fue en herramientas, pero apareció trabajo extra. El ahorro se volvió una habilidad.' }
     ]
   },
 
@@ -775,7 +791,8 @@ export const DECISIONES = [
     opciones: [
       { texto: 'Dólares al colchón', efectos: { plata: 10 }, set: {}, resultado: 'Te miraron raro por desconfiado. En diciembre de 2001 te miraron distinto: te pedían consejos.' },
       { texto: 'Plazo fijo en dólares en el banco', efectos: { plata: -18, felicidad: -12 }, set: {}, resultado: 'Eran tus dólares hasta la "pesificación asimétrica". El corralito te explicó que, adentro del banco, tus ahorros son una opinión.' },
-      { texto: 'Ladrillos', efectos: { plata: 8, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Compraste pared mientras otros compraban promesas bancarias. La pared no cotiza: por eso no se cae.' }
+      { texto: 'Ladrillos', efectos: { plata: 8, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Compraste pared mientras otros compraban promesas bancarias. La pared no cotiza: por eso no se cae.' },
+      { texto: 'Compro un auto usado para trabajar', efectos: { plata: -8, felicidad: 6 }, set: { propiedad: 'auto', marca: 'auto-trabajo' }, resultado: 'El auto perdió valor, pero te permitió moverte y trabajar. A veces un activo también es una salida.' }
     ]
   },
 
@@ -788,7 +805,8 @@ export const DECISIONES = [
     opciones: [
       { texto: 'Dólar blue al colchón', efectos: { plata: 10 }, set: {}, resultado: 'Comprarlos era medio ilegal; perder ahorros en pesos era legalísimo. El colchón nunca defrauda: no tiene directorio.' },
       { texto: 'Plazo fijo en pesos', efectos: { plata: -10, felicidad: -6 }, set: {}, resultado: 'La tasa perdió contra la inflación casi todos los meses. Le ganaste a la tentación del dólar y perdiste contra todo lo demás.' },
-      { texto: 'Ladrillos, aunque sea de a poco', efectos: { plata: 6, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Una piecita más, una losa, un lote lejos. Lento como obra pública, pero tuyo como ninguna.' }
+      { texto: 'Ladrillos, aunque sea de a poco', efectos: { plata: 6, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Una piecita más, una losa, un lote lejos. Lento como obra pública, pero tuyo como ninguna.' },
+      { texto: 'Pongo una parte en un emprendimiento', efectos: { plata: -5, felicidad: 7 }, set: { habilidad: 'emprendimiento', marca: 'invierte-emprendimiento' }, resultado: 'Pusiste los ahorros a trabajar en un proyecto. No fue seguro, pero abrió una posibilidad que el plazo fijo no tenía.' }
     ]
   },
 
@@ -801,7 +819,9 @@ export const DECISIONES = [
     contexto: 'La relación va en serio. La familia pregunta "¿para cuándo?" en cada asado, que acá es una forma de presión fiscal.',
     opciones: [
       { texto: 'Nos casamos ya', efectos: { felicidad: 10, plata: -8 }, set: { pareja: true }, resultado: 'Fiesta en el club, tortas de las tías y deudas chicas. Arrancaron con nada, como arrancó todo el mundo acá.' },
-      { texto: 'Esperamos a estar mejor', efectos: { felicidad: -3, plata: 5 }, set: {}, resultado: '"Estar mejor" en Argentina es un horizonte: camina con vos y nunca llega. Al menos se ahorraron el salón.' }
+      { texto: 'Esperamos a estar mejor', efectos: { felicidad: -3, plata: 5 }, set: {}, resultado: '"Estar mejor" en Argentina es un horizonte: camina con vos y nunca llega. Al menos se ahorraron el salón.' },
+      { texto: 'Nos mudamos juntos sin fiesta', efectos: { felicidad: 7, plata: -3 }, set: { pareja: true, marca: 'convivencia' }, resultado: 'Armaron una casa sin salón ni invitados. La convivencia empezó antes que la celebración.' },
+      { texto: 'Nos casamos por civil y festejamos después', efectos: { felicidad: 8, plata: -3 }, set: { pareja: true, marca: 'casamiento-civil' }, resultado: 'Firmaron primero y dejaron la fiesta para otro momento. El vínculo quedó formalizado, aunque el catering esperara.' }
     ]
   },
 
@@ -814,7 +834,9 @@ export const DECISIONES = [
     contexto: 'En el pueblo hay siesta, changa y todos saben tu apellido. En el Gran Buenos Aires dicen que hay laburo y, de paso, anonimato.',
     opciones: [
       { texto: 'Me voy al conurbano', efectos: { plata: 8, felicidad: -6 }, set: {}, resultado: 'Una pieza en Laferrere y dos horas de bondi al laburo. El progreso, visto desde el fondo del colectivo.' },
-      { texto: 'Me quedo en el pueblo', efectos: { felicidad: 6, plata: -5 }, set: {}, resultado: 'Menos plata, más siesta, la vida entera a cinco cuadras. Hay riquezas que el INDEC no mide.' }
+      { texto: 'Me quedo en el pueblo', efectos: { felicidad: 6, plata: -5 }, set: {}, resultado: 'Menos plata, más siesta, la vida entera a cinco cuadras. Hay riquezas que el INDEC no mide.' },
+      { texto: 'Me voy a la capital provincial', efectos: { plata: 5, felicidad: -2 }, set: { marca: 'migra-capital' }, resultado: 'Te mudaste a una ciudad más grande sin cruzar todo el país. Ganaste opciones y perdiste algo de calma.' },
+      { texto: 'Me quedo y armo un emprendimiento', efectos: { plata: -4, felicidad: 5 }, set: { habilidad: 'emprendimiento', marca: 'emprende-pueblo' }, resultado: 'Convertiste el pueblo en mercado propio. No llegó la gran empresa, pero llegó una forma de vivir de lo tuyo.' }
     ]
   },
 
@@ -827,7 +849,9 @@ export const DECISIONES = [
     contexto: 'Estás por recibirte o por crecer en el laburo, y la época entera —suegra, cura y vecinas— opina que "ya es hora" de otra cosa.',
     opciones: [
       { texto: 'Sigo mi carrera, que esperen', efectos: { plata: 10, felicidad: 4 }, set: {}, resultado: 'Remaste contra la corriente de toda una época. Las que vinieron después te lo agradecen sin saber tu nombre.' },
-      { texto: 'Postergo todo por la familia', efectos: { felicidad: 3, plata: -6 }, set: { pareja: true, hijosDelta: 1 }, resultado: 'Hiciste lo que la época esperaba de vos. Lo que hubieras sido quedó en un cajón, y cada tanto lo abrís.' }
+      { texto: 'Postergo todo por la familia', efectos: { felicidad: 3, plata: -6 }, set: { pareja: true, hijosDelta: 1 }, resultado: 'Hiciste lo que la época esperaba de vos. Lo que hubieras sido quedó en un cajón, y cada tanto lo abrís.' },
+      { texto: 'Sigo trabajando y estudio de noche', efectos: { plata: 6, felicidad: -2 }, set: { habilidad: 'estudio', marca: 'estudia-de-noche' }, resultado: 'No elegiste entre una cosa y la otra. Elegiste el cansancio de sostener ambas.' },
+      { texto: 'Negocio una crianza compartida', efectos: { plata: -3, felicidad: 6 }, set: { pareja: true, hijosDelta: 1, marca: 'crianza-compartida' }, resultado: 'La familia llegó sin borrar tus planes. Repartir las tareas no era costumbre, pero cambió la vida de todos.' }
     ]
   },
 
@@ -840,7 +864,9 @@ export const DECISIONES = [
     contexto: 'Tenés un oficio, unos ahorros y un plan. También tenés un país que se comió más emprendedores que la timba.',
     opciones: [
       { texto: 'Me largo con lo mío', efectos: { plata: -8, felicidad: 8 }, set: { laburo: 'cuentapropista', habilidad: 'emprendimiento' }, resultado: 'Sos tu propio jefe y tu propio empleado explotado. Los primeros años se llora en factura C.' },
-      { texto: 'Sigo en relación de dependencia', efectos: { plata: 4, felicidad: -4 }, set: { habilidad: 'estabilidad' }, resultado: 'El sueldo seguro, si "seguro" significa algo acá. El plan quedó en un cuaderno que todavía guardás.' }
+      { texto: 'Sigo en relación de dependencia', efectos: { plata: 4, felicidad: -4 }, set: { habilidad: 'estabilidad' }, resultado: 'El sueldo seguro, si "seguro" significa algo acá. El plan quedó en un cuaderno que todavía guardás.' },
+      { texto: 'Hago una prueba los fines de semana', efectos: { plata: -3, felicidad: 5 }, set: { habilidad: 'emprendimiento', marca: 'prueba-emprendimiento' }, resultado: 'Probaste el proyecto sin soltar el sueldo. El riesgo fue menor y el tiempo libre, casi inexistente.' },
+      { texto: 'Busco un socio y comparto el riesgo', efectos: { plata: 2, felicidad: 2 }, set: { habilidad: 'emprendimiento', marca: 'socio-emprendimiento' }, resultado: 'No cargaste el plan a solas. El negocio tuvo dos dueños y dos personas para discutir las pérdidas.' }
     ]
   }
 ];
