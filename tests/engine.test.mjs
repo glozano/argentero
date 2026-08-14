@@ -5,6 +5,7 @@ import { crearRng, textoASemilla, semillaATexto } from '../js/rng.js';
 import { nacer, simularVida } from '../js/engine.js';
 import { PROVINCIAS } from '../js/data/tablas.js';
 import { HISTORIA } from '../js/data/historia.js';
+import { DECISIONES } from '../js/data/eventos.js';
 import { textoShare } from '../js/ui.js';
 
 // mismo rng continuo para nacer + vivir, igual que main.js
@@ -102,4 +103,50 @@ test('la historia dispara: cobertura de eventos en 2000 vidas', async () => {
   assert.ok(cobertura > 0.7, `cobertura de historia: ${(cobertura * 100).toFixed(0)}% — ids sin disparar: ${idsHistoria.filter(id => !disparados.has(id)).join(', ')}`);
   assert.ok(crisisTotal > 0, 'nadie vivió una crisis (imposible siendo Argentina)');
   assert.ok(decisiones > 0, 'ninguna decisión ofrecida');
+});
+
+test('las historias pueden abrir decisiones cotidianas y conservar sus consecuencias', async () => {
+  const nacimiento = {
+    anio: 1980, genero: 'varon', provincia: 'Córdoba', localidad: 'Córdoba',
+    tipoLugar: 'capital', region: 'Pampeana', clase: 'media', hermanos: 1,
+    nombre: 'Carlos', apellido: 'Gómez', cuadro: 'Belgrano', lugar: 'Córdoba, Córdoba',
+  };
+  let decisionCalles;
+  const vida = await simularVida(nacimiento, crearRng(40510), {
+    onDecision: async dec => {
+      if (dec.pregunta.includes('quedás adentro')) {
+        decisionCalles = dec;
+        return dec.opciones[1];
+      }
+      return dec.opciones[0];
+    },
+  });
+
+  assert.ok(decisionCalles, 'la historia no abrió la decisión cotidiana');
+  assert.equal(decisionCalles.opciones.length, 2);
+  assert.ok(vida.marcas.includes('golpe-calles'));
+  assert.ok(vida.momentos.some(m => m.tipo === 'decision' && m.titulo.includes('quedás adentro')));
+});
+
+test('cada decisión tiene un conjunto múltiple y la interfaz recibe como máximo dos', () => {
+  assert.ok(DECISIONES.every(dec => dec.opciones.length >= 2));
+  assert.ok(DECISIONES.some(dec => dec.opciones.length > 2));
+  const colimba = DECISIONES.find(dec => dec.id === 'colimba');
+  assert.equal(colimba.etapa, 'juventud');
+  assert.equal(colimba.cond.edadMin, 18);
+});
+
+test('un resultado educativo cambia la decisión posterior', async () => {
+  const nacimiento = {
+    anio: 1980, genero: 'mujer', provincia: 'Córdoba', localidad: 'Córdoba',
+    tipoLugar: 'capital', region: 'Pampeana', clase: 'humilde', hermanos: 2,
+    nombre: 'Ana', apellido: 'Gómez', cuadro: 'Belgrano', lugar: 'Córdoba, Córdoba',
+  };
+  const vida = await simularVida(nacimiento, crearRng(40510), {
+    onDecision: async dec => dec.opciones[0],
+  });
+
+  assert.ok(vida.momentos.some(m => m.tipo === 'decision' && m.titulo.includes('Volvés a estudiar')));
+  assert.equal(vida.momentos.filter(m => m.titulo === 'La facultad').length, 0);
+  assert.equal(vida.educacion, 'secundaria');
 });

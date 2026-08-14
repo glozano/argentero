@@ -4,10 +4,10 @@ import {
   MORTALIDAD_INFANTIL, MULT_MORT_REGION, MULT_MORT_CLASE, ESPERANZA_VIDA,
   TGF, AJUSTE_HERMANOS, MOD_CLASE, MOD_REGION_EDU, PLATA_INICIAL,
   PRESIDENTES, MUNDIALES, CUADROS_BASE, CUADROS_PROVINCIA, buscarEnBandas, buscarRango,
-} from './data/tablas.js?v=2';
-import { HISTORIA } from './data/historia.js?v=2';
-import { EVENTOS, DECISIONES } from './data/eventos.js?v=2';
-import { NOMBRES, LOCALIDADES, CAUSAS_MUERTE, VEREDICTOS, FRASES_CLASE } from './data/textos.js?v=2';
+} from './data/tablas.js?v=3';
+import { HISTORIA } from './data/historia.js?v=3';
+import { EVENTOS, DECISIONES } from './data/eventos.js?v=3';
+import { NOMBRES, APELLIDOS, LOCALIDADES, CAUSAS_MUERTE, VEREDICTOS, FRASES_CLASE } from './data/textos.js?v=3';
 
 export const ANIO_ACTUAL = 2026;
 
@@ -77,12 +77,13 @@ export function nacer(rng) {
   hermanos = Math.min(hermanos, 14);
 
   const nombre = rng.pick(NOMBRES[genero][decadaNombre(anio)]);
+  const apellido = rng.pick(APELLIDOS);
 
   // el cuadro no se elige: se hereda (pesos Kantar + cuadro local de la provincia)
   const cuadro = rng.weighted([...CUADROS_BASE, ...(CUADROS_PROVINCIA[prov.nombre] || [])]);
 
   return {
-    anio, genero, provincia: prov.nombre, localidad, tipoLugar, region, clase, hermanos, nombre, cuadro,
+    anio, genero, provincia: prov.nombre, localidad, tipoLugar, region, clase, hermanos, nombre, apellido, cuadro,
     lugar: prov.nombre === 'CABA' ? `${localidad}, CABA` : `${localidad}, ${prov.nombre}`,
   };
 }
@@ -113,6 +114,34 @@ function aplicarSet(vida, set) {
   if (set.techoPropio) vida.techoPropio = true;
   if (set.jubilado) vida.jubilado = true;
   if (set.exilio) vida.exilio = set.exilio;
+  if (set.habilidad && !vida.habilidades.includes(set.habilidad)) vida.habilidades.push(set.habilidad);
+  if (set.propiedad && !vida.propiedades.includes(set.propiedad)) vida.propiedades.push(set.propiedad);
+  if (set.marca && !vida.marcas.includes(set.marca)) vida.marcas.push(set.marca);
+  for (const propiedad of set.propiedades || []) {
+    if (!vida.propiedades.includes(propiedad)) vida.propiedades.push(propiedad);
+  }
+}
+
+function estadoVida(vida, edad) {
+  return {
+    edad,
+    pareja: vida.pareja,
+    hijos: vida.hijos,
+    educacion: vida.educacion,
+    laburo: vida.laburo,
+    techoPropio: vida.techoPropio,
+    jubilado: vida.jubilado,
+    exilio: vida.exilio,
+    habilidades: [...vida.habilidades],
+    propiedades: [...vida.propiedades],
+    marcas: [...vida.marcas],
+  };
+}
+
+function opcionesVisibles(dec, rng) {
+  if (!dec.opciones || dec.opciones.length <= 2) return dec;
+  const inicio = rng.entre(0, dec.opciones.length - 2);
+  return { ...dec, opciones: dec.opciones.slice(inicio, inicio + 2) };
 }
 
 function cumpleCond(cond, ctx) {
@@ -132,6 +161,17 @@ function cumpleCond(cond, ctx) {
   if (cond.anioMax != null && anio != null && anio > cond.anioMax) return false;
   if (cond.plataMin != null && vida.stats.plata < cond.plataMin) return false;
   if (cond.plataMax != null && vida.stats.plata > cond.plataMax) return false;
+  if (cond.saludMin != null && vida.stats.salud < cond.saludMin) return false;
+  if (cond.saludMax != null && vida.stats.salud > cond.saludMax) return false;
+  if (cond.educacionIn && !cond.educacionIn.includes(vida.educacion)) return false;
+  if (cond.laburoIn && !cond.laburoIn.includes(vida.laburo)) return false;
+  if (cond.pareja != null && vida.pareja !== cond.pareja) return false;
+  if (cond.techoPropio != null && vida.techoPropio !== cond.techoPropio) return false;
+  if (cond.hijosMin != null && vida.hijos < cond.hijosMin) return false;
+  if (cond.hijosMax != null && vida.hijos > cond.hijosMax) return false;
+  if (cond.habilidadesIn && !cond.habilidadesIn.every(h => vida.habilidades.includes(h))) return false;
+  if (cond.propiedadesIn && !cond.propiedadesIn.every(p => vida.propiedades.includes(p))) return false;
+  if (cond.marcasIn && !cond.marcasIn.every(m => vida.marcas.includes(m))) return false;
   return true;
 }
 
@@ -152,12 +192,18 @@ export async function simularVida(nacimiento, rng, hooks = {}) {
     },
     educacion: 'primaria', laburo: null, pareja: false, hijos: 0,
     techoPropio: false, jubilado: false, exilio: null,
+    habilidades: [], propiedades: [], marcas: [],
     crisisVividas: 0, momentos: [], usados: new Set(),
     vivo: true, anioMuerte: null, edadMuerte: null, causaFinal: null, llegoAlPresente: false,
   };
 
   // cada momento lleva una foto de las barras para que la UI pinte el HUD con retardo
-  const emit = (m) => { m.stats = { ...vida.stats }; vida.momentos.push(m); onMomento(m); };
+  const emit = (m) => {
+    m.stats = { ...vida.stats };
+    m.estado = estadoVida(vida, m.edad ?? 0);
+    vida.momentos.push(m);
+    onMomento(m);
+  };
 
   for (const etapa of ETAPAS) {
     if (!vida.vivo || vida.llegoAlPresente) break;
@@ -178,7 +224,7 @@ export async function simularVida(nacimiento, rng, hooks = {}) {
       for (let edad = desde; edad <= hasta; edad++) {
         const anio = nacimiento.anio + edad;
         if (anio > ANIO_ACTUAL) { vida.llegoAlPresente = true; break; }
-        dispararHistoria(vida, rng, anio, edad, emit);
+        await dispararHistoria(vida, rng, anio, edad, emit, onDecision);
         if (vida.stats.salud <= 0 && vida.vivo) { morir(vida, rng, etapa.id, edad, emit, 'La salud no aguantó tanto sacudón.'); break; }
       }
       if (!vida.vivo || vida.llegoAlPresente) break;
@@ -294,7 +340,7 @@ function morir(vida, rng, etapaId, edad, emit, causaForzada) {
 }
 
 // ---------- HISTORIA ----------
-function dispararHistoria(vida, rng, anio, edad, emit) {
+async function dispararHistoria(vida, rng, anio, edad, emit, onDecision) {
   const ctx = { nacimiento: vida.nacimiento, edad, anio, vida };
   for (const ev of HISTORIA) {
     if (anio < ev.desde || anio > ev.hasta) continue;
@@ -330,6 +376,7 @@ function dispararHistoria(vida, rng, anio, edad, emit) {
     aplicarEfectos(vida, ev.efectos);
     emit({ tipo: 'historia', etapa: null, edad, anio, texto: plantilla(ev.texto, ctx), efectos: ev.efectos, tono: ev.tono });
     if (ev.set) aplicarSet(vida, ev.set);
+    if (ev.decision && vida.vivo) await resolverDecision(vida, opcionesVisibles(ev.decision, rng), edad, anio, emit, onDecision);
     if (!vida.vivo) return;
   }
 }
@@ -354,6 +401,12 @@ function tiradaDeEtapa(vida, rng, etapa, desde, hasta, emit) {
   if (vida.stats.salud > 70) mods.push({ label: 'buena salud', val: 1 });
   if (vida.stats.salud < 30) mods.push({ label: 'salud golpeada', val: -1 });
   if (vida.stats.plata < 15) mods.push({ label: 'en la lona', val: -1 });
+  if (ev.id === 'universidad' && vida.educacion === 'secundaria') mods.push({ label: 'secundario terminado', val: 2 });
+  if (ev.id === 'el-oficio' && vida.habilidades.includes('oficio')) mods.push({ label: 'oficio elegido', val: 2 });
+  if (ev.id.startsWith('techo-propio') && vida.propiedades.includes('lote')) mods.push({ label: 'lote propio', val: 2 });
+  if (ev.id === 'monotributo' && vida.habilidades.includes('emprendimiento')) mods.push({ label: 'experiencia por cuenta propia', val: 1 });
+  if (ev.id === 'reestructuracion' && vida.habilidades.includes('estabilidad')) mods.push({ label: 'antigüedad formal', val: 1 });
+  if (ev.id === 'los-aportes' && vida.laburo === 'en negro') mods.push({ label: 'años en negro', val: -2 });
 
   const d = rng.d12();
   const total = d + mods.reduce((a, m) => a + m.val, 0);
@@ -379,21 +432,29 @@ async function decisionDeEtapa(vida, rng, etapa, desde, hasta, emit, onDecision)
   const candidatas = DECISIONES.filter(dd => {
     if (dd.etapa !== etapa.id || vida.usados.has(dd.id)) return false;
     const c = dd.cond || {};
+    if (c.edadMin != null && hasta < c.edadMin) return false;
+    if (c.edadMax != null && desde > c.edadMax) return false;
     // la ventana de años de la decisión tiene que pisar los años del bloque
     if (c.anioMin != null && anios[1] < c.anioMin) return false;
     if (c.anioMax != null && anios[0] > c.anioMax) return false;
-    return cumpleCond({ ...c, anioMin: null, anioMax: null }, ctx);
+    return cumpleCond({ ...c, edadMin: null, edadMax: null, anioMin: null, anioMax: null }, ctx);
   });
   if (!candidatas.length) return false;
-  const dec = rng.pick(candidatas);
+  const urgentes = candidatas.filter(decision => decision.urgente);
+  const dec = opcionesVisibles(rng.pick(urgentes.length ? urgentes : candidatas), rng);
   vida.usados.add(dec.id);
 
-  const anioDec = Math.max(anios[0], Math.min(dec.cond?.anioMin || anios[0], anios[1]));
+  const edadDesde = Math.max(desde, dec.cond?.edadMin ?? desde);
+  const edadHasta = Math.min(hasta, dec.cond?.edadMax ?? hasta);
+  const edadObjetivo = Math.max(edadDesde, Math.min(dec.cond?.edadMin ?? edadDesde, edadHasta));
+  const anioBase = n.anio + edadObjetivo;
+  const anioDec = Math.max(anioBase, Math.min(dec.cond?.anioMin ?? anioBase, anios[1]));
   const edadDec = anioDec - n.anio;
+  const ctxDec = { ...ctx, edad: edadDec, anio: anioDec };
   const elegida = await onDecision({
     ...dec,
-    pregunta: plantilla(dec.pregunta, ctx),
-    contexto: plantilla(dec.contexto || '', ctx),
+    pregunta: plantilla(dec.pregunta, ctxDec),
+    contexto: plantilla(dec.contexto || '', ctxDec),
     anio: anioDec, edad: edadDec,
   });
   aplicarEfectos(vida, elegida.efectos);
@@ -401,9 +462,28 @@ async function decisionDeEtapa(vida, rng, etapa, desde, hasta, emit, onDecision)
   emit({
     tipo: 'decision', etapa: etapa.id, edad: edadDec, anio: anioDec,
     titulo: dec.pregunta, eleccion: elegida.texto,
-    texto: plantilla(elegida.resultado || '', ctx), efectos: elegida.efectos,
+    texto: plantilla(elegida.resultado || '', ctxDec), efectos: elegida.efectos,
   });
   return true;
+}
+
+async function resolverDecision(vida, dec, edad, anio, emit, onDecision) {
+  const ctx = { nacimiento: vida.nacimiento, edad, anio, vida };
+  const elegida = await onDecision({
+    ...dec,
+    pregunta: plantilla(dec.pregunta, ctx),
+    contexto: plantilla(dec.contexto || '', ctx),
+    anio,
+    edad,
+  });
+  const opcion = elegida || dec.opciones[0];
+  aplicarEfectos(vida, opcion.efectos);
+  aplicarSet(vida, opcion.set);
+  emit({
+    tipo: 'decision', etapa: null, edad, anio,
+    titulo: dec.pregunta, eleccion: opcion.texto,
+    texto: plantilla(opcion.resultado || '', ctx), efectos: opcion.efectos,
+  });
 }
 
 // ---------- CIERRE, SCORE, VEREDICTO ----------

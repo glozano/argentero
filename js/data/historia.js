@@ -273,6 +273,22 @@ export const HISTORIA = [
     efectos: { plata: 0, salud: 0, felicidad: -15 },
     tono: 'ironico'
   },
+  {
+    id: 'quilombo-calles-2001', desde: 2001, hasta: 2001,
+    cond: { edadMin: 16, edadMax: 60, genero: null, regiones: null, clases: null, plataMin: null },
+    prob: 1, unaVez: true,
+    texto: 'La historia baja de la tele a tu cuadra: sirenas, corridas y un quilombo en las calles. La decisión es cotidiana, pero el país no ayuda.',
+    efectos: { salud: 0, felicidad: -5 },
+    tono: 'sobrio',
+    decision: {
+      pregunta: '¿Te quedás adentro o salís a ver qué pasa?',
+      contexto: 'Afuera hay gente reclamando y también gente buscando pelea. Tu familia te pide que no te expongas.',
+      opciones: [
+        { texto: 'Me quedo adentro', efectos: { felicidad: -3 }, set: { habilidad: 'prudencia', marca: 'se-resguardo' }, resultado: 'Cerraste la persiana y cuidaste a los tuyos. No fue cobardía: fue llegar entero al día siguiente.' },
+        { texto: 'Salgo igual', efectos: { salud: -12, felicidad: -8 }, set: { marca: 'golpe-calles' }, resultado: 'Saliste y te cagaron a trompadas en la esquina. Volviste golpeado, con bronca y una historia que nadie quería escuchar completa.' }
+      ]
+    }
+  },
 
   // ——— 2002-2015: fondo del pozo, boom y cepo ———
   {

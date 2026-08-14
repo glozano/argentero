@@ -269,7 +269,7 @@ export const EVENTOS = [
 
   {
     id: 'universidad', etapa: 'juventud', peso: 12,
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
+    cond: { claseIn: null, educacionIn: ['secundaria', 'terciaria', 'universitaria'], regionIn: null, generoIn: null, anioMin: null, anioMax: null },
     titulo: 'La facultad',
     intro: 'La universidad pública es gratuita. Lo que no es gratis: los apuntes, el bondi y las horas que no laburás.',
     dc: 9, // solo ~12% de los pibes humildes llega: con -3 de clase necesitan un 12 natural
@@ -383,10 +383,10 @@ export const EVENTOS = [
     titulo: 'El techo propio',
     intro: 'Un terrenito, ladrillos de a poco y los fines de semana con la cuchara de albañil. La casa propia todavía es un plan posible.',
     dc: 4, // ~73% de vivienda propia en la era vieja
-    exito: { texto: 'Techo propio. Tardó años de domingos, pero abajo de estas chapas no manda ningún dueño.', efectos: { plata: 10, felicidad: 15 }, set: { techoPropio: true } },
+    exito: { texto: 'Techo propio. Tardó años de domingos, pero abajo de estas chapas no manda ningún dueño.', efectos: { plata: 10, felicidad: 15 }, set: { techoPropio: true, propiedad: 'casa' } },
     fallo: { texto: 'El terreno quedó en el papeleo o la plata en la inflación. Seguís alquilando futuro.', efectos: { felicidad: -8 }, set: {} },
     crit1: { texto: 'Habías juntado para los materiales y el plan económico de turno te licuó todo. La casa quedó en maqueta mental.', efectos: { plata: -12, felicidad: -10 } },
-    crit12: { texto: 'Casa propia con parrilla y limonero. El sueño argentino completo; la hamaca paraguaya ya está comprada.', efectos: { plata: 12, felicidad: 20 }, set: { techoPropio: true } }
+    crit12: { texto: 'Casa propia con parrilla y limonero. El sueño argentino completo; la hamaca paraguaya ya está comprada.', efectos: { plata: 12, felicidad: 20 }, set: { techoPropio: true, propiedad: 'casa' } }
   },
 
   {
@@ -395,10 +395,10 @@ export const EVENTOS = [
     titulo: 'El techo propio',
     intro: 'Comprar sin crédito es imposible y con crédito también. Pero en este país el ladrillo es religión.',
     dc: 6, // ~65% y bajando: cada década cuesta más
-    exito: { texto: 'Escrituraste. Nadie sabe cómo hiciste; vos tampoco, pero el techo es tuyo.', efectos: { plata: 8, felicidad: 15 }, set: { techoPropio: true } },
+    exito: { texto: 'Escrituraste. Nadie sabe cómo hiciste; vos tampoco, pero el techo es tuyo.', efectos: { plata: 8, felicidad: 15 }, set: { techoPropio: true, propiedad: 'casa' } },
     fallo: { texto: 'Entre el dólar y los requisitos del banco, seguís alquilando. El techo propio quedó para el próximo gobierno, como todo.', efectos: { felicidad: -8 }, set: {} },
     crit1: { texto: 'Firmaste un crédito atado a un índice que se disparó. La cuota te persigue como un acreedor con tu foto.', efectos: { plata: -14, felicidad: -10 } },
-    crit12: { texto: 'Terreno, planos y una casa que crece con cada aguinaldo. Contra toda macroeconomía, la levantaste.', efectos: { plata: 10, felicidad: 18 }, set: { techoPropio: true } }
+    crit12: { texto: 'Terreno, planos y una casa que crece con cada aguinaldo. Contra toda macroeconomía, la levantaste.', efectos: { plata: 10, felicidad: 18 }, set: { techoPropio: true, propiedad: 'casa' } }
   },
 
   {
@@ -455,15 +455,15 @@ export const EVENTOS = [
     titulo: 'El auto usado',
     intro: 'Un auto con más dueños que la Casa de Gobierno, pero con los papeles al día. Casi.',
     dc: 6,
-    exito: { texto: 'Anda. Gasta, pero anda. Los viajes a la costa ya se planifican con termo y mate.', efectos: { plata: -5, felicidad: 10 }, set: {} },
+    exito: { texto: 'Anda. Gasta, pero anda. Los viajes a la costa ya se planifican con termo y mate.', efectos: { plata: -5, felicidad: 10 }, set: { propiedad: 'auto' } },
     fallo: { texto: 'La junta de tapa te saludó a los dos meses. El mecánico ya te tutea.', efectos: { plata: -8, felicidad: -4 }, set: {} },
     crit1: { texto: 'Resultó tener deuda de patente en tres provincias. Comprarlo fue lo más barato que tuvo.', efectos: { plata: -12, felicidad: -6 } },
-    crit12: { texto: 'Salió un fierro noble: años y años sin abrir el capó. Le vas a terminar poniendo nombre, y está bien.', efectos: { felicidad: 12 } }
+    crit12: { texto: 'Salió un fierro noble: años y años sin abrir el capó. Le vas a terminar poniendo nombre, y está bien.', efectos: { felicidad: 12 }, set: { propiedad: 'auto' } }
   },
 
   {
     id: 'la-separacion', etapa: 'adultez', peso: 6,
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
+    cond: { pareja: true, claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
     titulo: 'La separación',
     intro: 'Lo que era equipo ahora es inventario: quién se queda con qué, quién se queda con quién.',
     dc: 6,
@@ -475,7 +475,7 @@ export const EVENTOS = [
 
   {
     id: 'club-de-los-pibes', etapa: 'adultez', peso: 7,
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
+    cond: { hijosMin: 1, claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
     titulo: 'El club de los pibes',
     intro: 'Tus hijos arrancan en el baby del club. Ya sabés cómo termina: vos, la parrilla del bufet y los sábados hipotecados.',
     dc: 5,
@@ -537,7 +537,7 @@ export const EVENTOS = [
 
   {
     id: 'casita-del-fondo', etapa: 'madurez', peso: 7,
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
+    cond: { hijosMin: 1, claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
     titulo: 'La casita del fondo',
     intro: 'Tu hijo mayor no llega ni al alquiler. El fondo de tu casa lo mira con ojos de terreno edificable.',
     dc: 6,
@@ -599,7 +599,7 @@ export const EVENTOS = [
 
   {
     id: 'los-nietos', etapa: 'vejez', peso: 9,
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
+    cond: { hijosMin: 1, claseIn: null, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
     titulo: 'Los nietos',
     intro: 'Llegan los nietos, con hambre de historias y de milanesas. Vos tenés stock de las dos cosas.',
     dc: 4,
@@ -651,20 +651,33 @@ export const DECISIONES = [
   // Estudiar o laburar (adolescencia, clase baja)
   {
     id: 'estudiar-o-laburar', etapa: 'adolescencia',
-    cond: { claseIn: ['humilde', 'trabajadora'], regionIn: null, generoIn: null, anioMin: null, anioMax: null },
+    cond: { claseIn: ['humilde', 'trabajadora'], edadMin: 15, edadMax: 17, regionIn: null, generoIn: null, anioMin: null, anioMax: null },
     unaVez: true,
     pregunta: '¿Seguís estudiando o entrás a laburar?',
     contexto: 'En casa la plata no alcanza y en el corralón buscan pibe. El colegio no paga; el corralón, algo.',
     opciones: [
-      { texto: 'Sigo estudiando, aunque cueste', efectos: { plata: -8, felicidad: 5 }, set: {}, resultado: 'Elegiste el pizarrón con la heladera flaca. Apostaste a largo plazo en un país cortoplacista: se banca.' },
-      { texto: 'Entro a laburar, la casa manda', efectos: { plata: 10, felicidad: -5 }, set: { laburo: 'en negro' }, resultado: 'A los quince ya parás la olla. Nadie te va a dar un diploma por esto, y es una injusticia.' }
+      { texto: 'Sigo estudiando, aunque cueste', efectos: { plata: -8, felicidad: 5 }, set: { habilidad: 'estudio', marca: 'sigue-estudiando' }, resultado: 'Elegiste el pizarrón con la heladera flaca. Apostaste a largo plazo en un país cortoplacista: se banca.' },
+      { texto: 'Entro a laburar, la casa manda', efectos: { plata: 10, felicidad: -5 }, set: { laburo: 'en negro', habilidad: 'oficio' }, resultado: 'A los quince ya parás la olla. Nadie te va a dar un diploma por esto, y es una injusticia.' }
+    ]
+  },
+
+  // Una escolaridad interrumpida vuelve como decisión en la juventud.
+  {
+    id: 'retomar-estudios', etapa: 'juventud', urgente: true,
+    cond: { educacionIn: ['primaria'], edadMin: 18, edadMax: 29, anioMin: null, anioMax: null },
+    unaVez: true,
+    pregunta: 'La escuela quedó a medias. ¿Volvés a estudiar o seguís trabajando?',
+    contexto: 'Ahora tenés otras responsabilidades. Retomar cuesta tiempo y plata, pero dejarlo atrás también tiene un costo.',
+    opciones: [
+      { texto: 'Vuelvo a estudiar', efectos: { plata: -8, felicidad: 6 }, set: { educacion: 'secundaria', habilidad: 'estudio', marca: 'retomo-estudios' }, resultado: 'Volviste al aula. No recuperaste los años, pero recuperaste una puerta. Más adelante la facultad vuelve a ser una opción.' },
+      { texto: 'Sigo trabajando', efectos: { plata: 8, felicidad: -4 }, set: { habilidad: 'oficio', marca: 'dejo-estudios' }, resultado: 'Elegiste el ingreso de hoy. El oficio crece, y el título queda como una pregunta que la vida puede volver a hacerte.' }
     ]
   },
 
   // Colimba (varón, antes de 1994)
   {
-    id: 'colimba', etapa: 'adolescencia',
-    cond: { claseIn: ['humilde', 'trabajadora', 'media'], regionIn: null, generoIn: ['varon'], anioMin: null, anioMax: 1993 },
+    id: 'colimba', etapa: 'juventud',
+    cond: { claseIn: ['humilde', 'trabajadora', 'media'], edadMin: 18, edadMax: 20, regionIn: null, generoIn: ['varon'], anioMin: null, anioMax: 1993 },
     unaVez: true,
     pregunta: 'Te toca la colimba.',
     contexto: 'Sorteo por los últimos números del documento. Un año de tu vida en manos del azar estatal, que ya te conoce.',
@@ -675,8 +688,8 @@ export const DECISIONES = [
   },
 
   {
-    id: 'colimba-acomodo', etapa: 'adolescencia',
-    cond: { claseIn: ['acomodada'], regionIn: null, generoIn: ['varon'], anioMin: null, anioMax: 1993 },
+    id: 'colimba-acomodo', etapa: 'juventud',
+    cond: { claseIn: ['acomodada'], edadMin: 18, edadMax: 20, regionIn: null, generoIn: ['varon'], anioMin: null, anioMax: 1993 },
     unaVez: true,
     pregunta: 'Te toca la colimba.',
     contexto: 'Salió tu número. Tu viejo conoce a un coronel amigo de la familia: una llamada y quedás "afectado a tareas administrativas".',
@@ -689,7 +702,7 @@ export const DECISIONES = [
   // Migrar en dictadura (76-83) — tono sobrio, sin chistes
   {
     id: 'migrar-dictadura', etapa: 'juventud',
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: 1976, anioMax: 1982 },
+    cond: { claseIn: null, edadMin: 18, edadMax: 29, regionIn: null, generoIn: null, anioMin: 1976, anioMax: 1982 },
     unaVez: true,
     pregunta: '¿Te quedás o te vas?',
     contexto: 'Son años de plomo. Compañeros tuyos ya no están y nadie pregunta en voz alta. Hay un pasaje posible a México o a España.',
@@ -702,7 +715,7 @@ export const DECISIONES = [
   // Migrar 2001-2003
   {
     id: 'migrar-2001', etapa: 'juventud',
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: 2001, anioMax: 2003 },
+    cond: { claseIn: null, edadMin: 18, edadMax: 29, regionIn: null, generoIn: null, anioMin: 2001, anioMax: 2003 },
     unaVez: true,
     pregunta: '¿Te vas o te quedás?',
     contexto: 'Tu primo desde Barcelona te dice que allá "está todo bien". Acá no hay laburo ni para el que madruga.',
@@ -715,7 +728,7 @@ export const DECISIONES = [
   // Migrar 2018-2024
   {
     id: 'migrar-2018', etapa: 'juventud',
-    cond: { claseIn: null, regionIn: null, generoIn: null, anioMin: 2018, anioMax: 2024 },
+    cond: { claseIn: null, edadMin: 18, edadMax: 29, regionIn: null, generoIn: null, anioMin: 2018, anioMax: 2024 },
     unaVez: true,
     pregunta: '¿Emigrás o aguantás?',
     contexto: 'Medio grupo de amigos ya está en Madrid y el otro medio junta para el pasaje. Tu sueldo, pasado a dólares, da risa. O llanto.',
@@ -736,7 +749,7 @@ export const DECISIONES = [
     opciones: [
       { texto: 'En el banco, a interés', efectos: { plata: -6, felicidad: -3 }, set: {}, resultado: 'El interés existía; la inflación, más. Los pesos se achicaron con elegancia, sin escándalo, como se perdía plata antes.' },
       { texto: 'Dólares, por las dudas', efectos: { plata: 8 }, set: {}, resultado: 'Todavía no era deporte nacional, pero vos ya la viste venir. Fundaste una tradición.' },
-      { texto: 'Ladrillos: un lotecito', efectos: { plata: 8, felicidad: 4 }, set: {}, resultado: 'Un lote en las afueras. Con los años, las afueras se volvieron barrio y el lotecito, patrimonio.' }
+      { texto: 'Ladrillos: un lotecito', efectos: { plata: 8, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Un lote en las afueras. Con los años, las afueras se volvieron barrio y el lotecito, patrimonio.' }
     ]
   },
 
@@ -749,7 +762,7 @@ export const DECISIONES = [
     opciones: [
       { texto: 'Dólares abajo del colchón', efectos: { plata: 12 }, set: {}, resultado: 'El colchón rindió más que cualquier banco. En este país el mueble más rentable es el sommier.' },
       { texto: 'Plazo fijo, como la gente seria', efectos: { plata: -15, felicidad: -8 }, set: {}, resultado: 'La tasa era fabulosa hasta que el plan de turno la hizo cenizas. "El que apuesta al dólar pierde", dijo el ministro. Perdió el que le creyó.' },
-      { texto: 'Ladrillos: un terrenito', efectos: { plata: 8, felicidad: 5 }, set: {}, resultado: 'El terreno no paga interés pero tampoco se evapora. Lo que se atornilla al suelo, acá, sobrevive.' }
+      { texto: 'Ladrillos: un terrenito', efectos: { plata: 8, felicidad: 5 }, set: { propiedad: 'lote' }, resultado: 'El terreno no paga interés pero tampoco se evapora. Lo que se atornilla al suelo, acá, sobrevive.' }
     ]
   },
 
@@ -762,7 +775,7 @@ export const DECISIONES = [
     opciones: [
       { texto: 'Dólares al colchón', efectos: { plata: 10 }, set: {}, resultado: 'Te miraron raro por desconfiado. En diciembre de 2001 te miraron distinto: te pedían consejos.' },
       { texto: 'Plazo fijo en dólares en el banco', efectos: { plata: -18, felicidad: -12 }, set: {}, resultado: 'Eran tus dólares hasta la "pesificación asimétrica". El corralito te explicó que, adentro del banco, tus ahorros son una opinión.' },
-      { texto: 'Ladrillos', efectos: { plata: 8, felicidad: 4 }, set: {}, resultado: 'Compraste pared mientras otros compraban promesas bancarias. La pared no cotiza: por eso no se cae.' }
+      { texto: 'Ladrillos', efectos: { plata: 8, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Compraste pared mientras otros compraban promesas bancarias. La pared no cotiza: por eso no se cae.' }
     ]
   },
 
@@ -775,7 +788,7 @@ export const DECISIONES = [
     opciones: [
       { texto: 'Dólar blue al colchón', efectos: { plata: 10 }, set: {}, resultado: 'Comprarlos era medio ilegal; perder ahorros en pesos era legalísimo. El colchón nunca defrauda: no tiene directorio.' },
       { texto: 'Plazo fijo en pesos', efectos: { plata: -10, felicidad: -6 }, set: {}, resultado: 'La tasa perdió contra la inflación casi todos los meses. Le ganaste a la tentación del dólar y perdiste contra todo lo demás.' },
-      { texto: 'Ladrillos, aunque sea de a poco', efectos: { plata: 6, felicidad: 4 }, set: {}, resultado: 'Una piecita más, una losa, un lote lejos. Lento como obra pública, pero tuyo como ninguna.' }
+      { texto: 'Ladrillos, aunque sea de a poco', efectos: { plata: 6, felicidad: 4 }, set: { propiedad: 'lote' }, resultado: 'Una piecita más, una losa, un lote lejos. Lento como obra pública, pero tuyo como ninguna.' }
     ]
   },
 
@@ -826,8 +839,8 @@ export const DECISIONES = [
     pregunta: '¿Te largás por tu cuenta?',
     contexto: 'Tenés un oficio, unos ahorros y un plan. También tenés un país que se comió más emprendedores que la timba.',
     opciones: [
-      { texto: 'Me largo con lo mío', efectos: { plata: -8, felicidad: 8 }, set: { laburo: 'cuentapropista' }, resultado: 'Sos tu propio jefe y tu propio empleado explotado. Los primeros años se llora en factura C.' },
-      { texto: 'Sigo en relación de dependencia', efectos: { plata: 4, felicidad: -4 }, set: {}, resultado: 'El sueldo seguro, si "seguro" significa algo acá. El plan quedó en un cuaderno que todavía guardás.' }
+      { texto: 'Me largo con lo mío', efectos: { plata: -8, felicidad: 8 }, set: { laburo: 'cuentapropista', habilidad: 'emprendimiento' }, resultado: 'Sos tu propio jefe y tu propio empleado explotado. Los primeros años se llora en factura C.' },
+      { texto: 'Sigo en relación de dependencia', efectos: { plata: 4, felicidad: -4 }, set: { habilidad: 'estabilidad' }, resultado: 'El sueldo seguro, si "seguro" significa algo acá. El plan quedó en un cuaderno que todavía guardás.' }
     ]
   }
 ];

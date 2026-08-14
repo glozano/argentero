@@ -27,6 +27,13 @@ export const NOMBRES = {
   },
 };
 
+export const APELLIDOS = [
+  'Gómez', 'González', 'Rodríguez', 'Fernández', 'López', 'Martínez',
+  'Pérez', 'Sánchez', 'Romero', 'Díaz', 'Sosa', 'Álvarez', 'Torres',
+  'Ruiz', 'Benítez', 'Acosta', 'Medina', 'Herrera', 'Suárez', 'Aguirre',
+  'Molina', 'Castro', 'Ríos', 'Vega', 'Quiroga', 'Ponce', 'Farías',
+];
+
 // ---------------------------------------------------------------------------
 // 24 jurisdicciones (23 provincias + CABA). Capital real + pueblos reales.
 // Buenos Aires suma conurbano; CABA usa barrios en lugar de pueblos.

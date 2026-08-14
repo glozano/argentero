@@ -121,6 +121,23 @@ body::before { /* trama sutil de fondo */
 .barra.salud .relleno { background: #fb7185; }
 .barra.felicidad .relleno { background: var(--sol); }
 
+.perfil-vida {
+  background: var(--carta); border: 1px solid var(--borde); border-radius: 14px;
+  padding: 13px 15px; margin: 12px 0 4px;
+}
+.perfil-titulo {
+  color: var(--celeste); font-size: 12px; font-weight: 800; letter-spacing: 0.14em;
+  text-transform: uppercase; margin-bottom: 9px;
+}
+.perfil-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 12px; }
+.perfil-grid > div { min-width: 0; }
+.perfil-grid .perfil-ancho { grid-column: 1 / -1; }
+.perfil-grid span {
+  display: block; color: var(--texto-2); font-size: 10px; letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.perfil-grid b { display: block; font-size: 13px; margin-top: 1px; overflow-wrap: anywhere; }
+
 .timeline { padding: 8px 0 84px; } /* aire para el botón Seguir fijo */
 .etapa-titulo {
   display: flex; align-items: center; gap: 10px; margin: 22px 0 8px;

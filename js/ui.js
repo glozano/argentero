@@ -1,7 +1,7 @@
 // Render y ritmo del juego. Sin lógica de simulación: eso vive en engine.js.
-import { UI, SHARE_TPL, FRASES_CLASE } from './data/textos.js?v=2';
-import { fraseNacimiento, ETAPAS, ANIO_ACTUAL } from './engine.js?v=2';
-import { semillaATexto } from './rng.js?v=2';
+import { UI, SHARE_TPL, FRASES_CLASE } from './data/textos.js?v=3';
+import { fraseNacimiento, ETAPAS, ANIO_ACTUAL } from './engine.js?v=3';
+import { semillaATexto } from './rng.js?v=3';
 
 const $ = (sel) => document.querySelector(sel);
 export let VELOCIDAD = 1; // 1 normal, 2 rápido
@@ -87,9 +87,48 @@ function pintarBarras(stats) {
   }
 }
 
+const EDUCACION = {
+  primaria: 'Primaria', secundaria: 'Secundaria', terciaria: 'Terciario', universitaria: 'Universidad',
+};
+const PROPIEDADES = { lote: 'Lote', casa: 'Casa propia 🏠', auto: 'Auto 🚗' };
+const HABILIDADES = {
+  estudio: 'Estudio', oficio: 'Oficio', emprendimiento: 'Emprendimiento',
+  estabilidad: 'Trabajo formal', prudencia: 'Prudencia',
+};
+
+function pintarPerfil(nacimiento, estado = {}) {
+  const familia = [
+    FRASES_CLASE[nacimiento.clase].replace('en una familia ', ''),
+    nacimiento.hermanos === 0 ? 'sin hermanos' : `${nacimiento.hermanos} ${nacimiento.hermanos === 1 ? 'hermano' : 'hermanos'}`,
+    estado.pareja ? 'en pareja' : 'sin pareja',
+    `${estado.hijos || 0} ${estado.hijos === 1 ? 'hijo' : 'hijos'}`,
+  ];
+  const propiedades = [...(estado.propiedades || [])];
+  if (estado.techoPropio && !propiedades.includes('casa')) propiedades.unshift('casa');
+  const propiedadesTxt = propiedades.length
+    ? propiedades.map(p => PROPIEDADES[p] || p).join(' · ')
+    : 'Ninguna todavía';
+  const habilidades = (estado.habilidades || []).map(h => HABILIDADES[h] || h);
+  const habilidadesTxt = habilidades.length ? habilidades.join(' · ') : 'Todavía ninguna';
+  const perfil = $('#perfil-vida');
+  if (!perfil) return;
+  perfil.innerHTML = `
+    <div class="perfil-titulo">Ficha de personaje</div>
+    <div class="perfil-grid">
+      <div><span>Nombre</span><b>${nacimiento.nombre}</b></div>
+      <div><span>Apellido</span><b>${nacimiento.apellido}</b></div>
+      <div><span>Edad</span><b>${estado.edad ?? 0} años</b></div>
+      <div><span>Educación</span><b>${EDUCACION[estado.educacion] || 'Primaria'}</b></div>
+      <div class="perfil-ancho"><span>Familia</span><b>${familia.join(' · ')}</b></div>
+      <div class="perfil-ancho"><span>Propiedades</span><b>${propiedadesTxt}</b></div>
+      <div class="perfil-ancho"><span>Habilidades</span><b>${habilidadesTxt}</b></div>
+    </div>`;
+}
+
 export function pintarHudInicial(nacimiento) {
-  $('#hud-nombre').textContent = `${nacimiento.nombre} · ${nacimiento.lugar}`;
+  $('#hud-nombre').textContent = `${nacimiento.nombre} ${nacimiento.apellido} · ${nacimiento.lugar}`;
   $('#hud-anio').textContent = nacimiento.anio;
+  pintarPerfil(nacimiento);
 }
 
 // ---------- NACIMIENTO ----------
@@ -104,6 +143,7 @@ export async function animarNacimiento(nacimiento, rngVisual) {
     ['Hermanos', String(nacimiento.hermanos)],
     ['Cuadro (herencia)', nacimiento.cuadro],
     ['Te anotaron como', nacimiento.nombre],
+    ['Apellido', nacimiento.apellido],
   ];
   const acta = $('#acta-nacimiento');
   acta.innerHTML = `<div class="encabezado">${UI.partida.encabezado}</div>` + filas.map(([campo], i) =>
@@ -182,6 +222,7 @@ export async function renderMomento(m, nacimiento) {
 
   $('#hud-anio').textContent = m.anio;
   if (m.stats) pintarBarras(m.stats);
+  pintarPerfil(nacimiento, m.estado);
   window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
@@ -217,7 +258,7 @@ export function pedirDecision(dec) {
     ov.querySelector('.intro').textContent = dec.contexto || '';
     const cont = ov.querySelector('.opciones');
     cont.innerHTML = '';
-    dec.opciones.forEach(op => {
+    dec.opciones.slice(0, 2).forEach(op => {
       const btn = document.createElement('button');
       btn.className = 'opcion';
       btn.innerHTML = `<span class="texto-op">${op.texto}</span>`;
@@ -246,7 +287,7 @@ export function pintarFinal(vida, seed, urlBase) {
       </div>
       <div class="puntaje"><span class="num">${vida.score}</span><span class="de"> / 120</span></div>
       <div class="vida-frase">${fraseNacimiento(n)}</div>
-      <div class="anios-vida">${n.nombre} · ${aniosTxt}${vida.vivo ? '' : `<br><em>${vida.causaFinal}</em>`}</div>
+      <div class="anios-vida">${n.nombre} ${n.apellido} · ${aniosTxt}${vida.vivo ? '' : `<br><em>${vida.causaFinal}</em>`}</div>
       <div class="resumen-grid">
         <div class="resumen-item"><div class="campo">Educación</div><div class="valor">${educ}</div></div>
         <div class="resumen-item"><div class="campo">Laburo</div><div class="valor">${vida.laburo}</div></div>
