@@ -1,0 +1,236 @@
+/* ARGENTERO — dark, mobile-first, estilo copero con acento celeste y sol */
+:root {
+  --fondo: #0b0c0e;
+  --carta: #16181c;
+  --carta-2: #1d2026;
+  --borde: #2a2e36;
+  --texto: #f2f3f5;
+  --texto-2: #9aa1ad;
+  --celeste: #75aadb;
+  --celeste-osc: #4a7fb5;
+  --sol: #f6b40e;
+  --exito: #4ade80;
+  --fallo: #f87171;
+  --sobrio: #b9c0cc;
+  --radio: 16px;
+  --fuente: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente);
+  min-height: 100dvh;
+  line-height: 1.45;
+}
+body::before { /* trama sutil de fondo */
+  content: '';
+  position: fixed; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(117, 170, 219, 0.13), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 110%, rgba(246, 180, 14, 0.05), transparent);
+}
+
+#app { position: relative; max-width: 520px; margin: 0 auto; padding: 20px 16px 48px; }
+
+.pantalla { display: none; animation: aparecer 0.35s ease; }
+.pantalla.activa { display: block; }
+@keyframes aparecer { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- PORTADA ---------- */
+.portada { text-align: center; padding-top: 8vh; }
+.portada .sol { font-size: 56px; line-height: 1; filter: drop-shadow(0 0 24px rgba(246, 180, 14, 0.45)); }
+.portada h1 {
+  font-size: 52px; font-weight: 900; letter-spacing: 0.02em; margin: 12px 0 4px;
+  background: linear-gradient(180deg, #fff 20%, var(--celeste) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.portada .bajada { font-size: 20px; font-weight: 700; color: var(--sol); margin-bottom: 16px; }
+.portada .explicacion { color: var(--texto-2); font-size: 15px; max-width: 400px; margin: 0 auto 28px; }
+.portada .disclaimer { color: var(--texto-2); font-size: 12px; margin-top: 40px; opacity: 0.8; }
+
+.boton {
+  display: inline-block; border: 0; cursor: pointer; font-family: inherit;
+  background: var(--celeste); color: #0b0c0e; font-size: 18px; font-weight: 800;
+  padding: 14px 36px; border-radius: 999px; transition: transform 0.12s, box-shadow 0.12s;
+  box-shadow: 0 4px 24px rgba(117, 170, 219, 0.35);
+}
+.boton:active { transform: scale(0.96); }
+.boton.secundario { background: var(--carta-2); color: var(--texto); box-shadow: none; border: 1px solid var(--borde); }
+.boton.chico { font-size: 14px; padding: 10px 22px; }
+.boton:disabled { opacity: 0.45; cursor: default; }
+
+/* ---------- DADO ---------- */
+.dado-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 18px auto; }
+.dado {
+  width: 92px; height: 92px; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.dado svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dado .cara-num {
+  position: relative; font-size: 36px; font-weight: 900; color: #0b0c0e; z-index: 2;
+  font-variant-numeric: tabular-nums;
+}
+.dado.girando { animation: girar 0.55s linear infinite; }
+@keyframes girar { from { transform: rotate(0) scale(1); } 50% { transform: rotate(180deg) scale(1.08); } to { transform: rotate(360deg) scale(1); } }
+.dado.resultado-crit { filter: drop-shadow(0 0 18px var(--sol)); }
+.dado.resultado-pifia { filter: drop-shadow(0 0 18px var(--fallo)); }
+.dado-cuenta { font-size: 15px; color: var(--texto-2); text-align: center; min-height: 22px; font-variant-numeric: tabular-nums; }
+.dado-cuenta b { color: var(--texto); }
+.dado-cuenta .vs-exito { color: var(--exito); font-weight: 800; }
+.dado-cuenta .vs-fallo { color: var(--fallo); font-weight: 800; }
+
+/* ---------- PARTIDA DE NACIMIENTO ---------- */
+.acta {
+  background: linear-gradient(160deg, var(--carta), var(--carta-2));
+  border: 1px solid var(--borde); border-radius: var(--radio);
+  padding: 22px 20px; margin: 14px 0; position: relative; overflow: hidden;
+}
+.acta::before {
+  content: '☀'; position: absolute; right: -20px; top: -28px; font-size: 130px;
+  opacity: 0.05; color: var(--sol);
+}
+.acta .encabezado {
+  text-align: center; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--texto-2); border-bottom: 1px dashed var(--borde); padding-bottom: 10px; margin-bottom: 14px;
+}
+.acta .fila { display: flex; justify-content: space-between; padding: 7px 0; font-size: 15px; gap: 12px; }
+.acta .fila + .fila { border-top: 1px solid rgba(42, 46, 54, 0.6); }
+.acta .fila .campo { color: var(--texto-2); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 2px; }
+.acta .fila .valor { font-weight: 700; text-align: right; opacity: 0; transform: translateY(6px); transition: all 0.4s ease; }
+.acta .fila .valor.visible { opacity: 1; transform: none; }
+.acta .frase { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--borde); font-size: 16px; font-style: italic; color: var(--celeste); text-align: center; }
+
+/* ---------- VIDA ---------- */
+.hud {
+  position: sticky; top: 0; z-index: 10; background: rgba(11, 12, 14, 0.97);
+  padding: 10px 0 12px; margin-bottom: 6px; border-bottom: 1px solid var(--borde);
+}
+.hud .quien { display: flex; justify-content: space-between; align-items: baseline; font-size: 14px; margin-bottom: 8px; gap: 8px; }
+.hud .quien .nombre { font-weight: 800; font-size: 16px; }
+.hud .quien .anio-actual { color: var(--sol); font-weight: 800; font-variant-numeric: tabular-nums; }
+.barras { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.barra { font-size: 11px; color: var(--texto-2); }
+.barra .etiqueta { display: flex; justify-content: space-between; margin-bottom: 3px; }
+.barra .etiqueta b { color: var(--texto); font-variant-numeric: tabular-nums; }
+.barra .pista { height: 6px; background: var(--carta-2); border-radius: 4px; overflow: hidden; }
+.barra .relleno { height: 100%; border-radius: 4px; transition: width 0.6s ease, background 0.6s; }
+.barra.plata .relleno { background: var(--exito); }
+.barra.salud .relleno { background: #fb7185; }
+.barra.felicidad .relleno { background: var(--sol); }
+
+.timeline { padding: 8px 0; }
+.etapa-titulo {
+  display: flex; align-items: center; gap: 10px; margin: 22px 0 8px;
+  font-size: 13px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--celeste);
+  font-weight: 800;
+}
+.etapa-titulo::after { content: ''; flex: 1; height: 1px; background: var(--borde); }
+.etapa-titulo .anios { color: var(--texto-2); font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+.momento {
+  background: var(--carta); border: 1px solid var(--borde); border-radius: 14px;
+  padding: 13px 15px; margin: 10px 0; font-size: 15px;
+  animation: aparecer 0.4s ease;
+}
+.momento .meta { font-size: 12px; color: var(--texto-2); margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+.momento .efectos { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; }
+.momento.historia { border-left: 3px solid var(--celeste); }
+.momento.historia.sobrio { border-left-color: var(--sobrio); background: #14161a; }
+.momento.historia.sobrio .texto { color: var(--sobrio); }
+.momento.muerte { border: 1px solid #3f3f46; background: #111114; text-align: center; padding: 20px; }
+.momento.muerte .texto { color: var(--sobrio); font-style: italic; }
+.momento.hito { border-left: 3px solid var(--sol); }
+.momento.decision-log { border-left: 3px solid #c084fc; }
+.momento.decision-log .eleccion { color: #c084fc; font-weight: 700; font-size: 13px; }
+.momento.tirada-log .titulo-ev { font-weight: 800; margin-bottom: 2px; }
+.momento.tirada-log .intro { color: var(--texto-2); font-size: 14px; margin-bottom: 8px; }
+.momento.tirada-log.exito { border-left: 3px solid var(--exito); }
+.momento.tirada-log.fallo { border-left: 3px solid var(--fallo); }
+.momento.tirada-log.crit { border-left: 3px solid var(--sol); box-shadow: 0 0 20px rgba(246, 180, 14, 0.12); }
+.momento.tirada-log.pifia { border-left: 3px solid var(--fallo); box-shadow: 0 0 20px rgba(248, 113, 113, 0.12); }
+
+.chip {
+  font-size: 12px; font-weight: 700; padding: 2px 9px; border-radius: 999px;
+  background: var(--carta-2); border: 1px solid var(--borde); font-variant-numeric: tabular-nums;
+}
+.chip.pos { color: var(--exito); }
+.chip.neg { color: var(--fallo); }
+
+/* overlay del dado en tiradas */
+.overlay {
+  position: fixed; inset: 0; z-index: 50; display: none;
+  align-items: center; justify-content: center; padding: 20px;
+  background: rgba(11, 12, 14, 0.9);
+}
+.overlay.visible { display: flex; }
+.overlay .caja {
+  background: var(--carta); border: 1px solid var(--borde); border-radius: var(--radio);
+  max-width: 420px; width: 100%; padding: 22px; text-align: center;
+  animation: aparecer 0.25s ease;
+}
+.overlay .caja h3 { font-size: 19px; margin-bottom: 4px; }
+.overlay .caja .intro { color: var(--texto-2); font-size: 14px; }
+.overlay .caja .resultado-texto { font-size: 16px; margin: 10px 0 4px; min-height: 24px; }
+.overlay .caja .resultado-texto.crit { color: var(--sol); font-weight: 800; }
+.overlay .caja .resultado-texto.pifia { color: var(--fallo); font-weight: 800; }
+
+/* decisiones */
+.opciones { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.opcion {
+  cursor: pointer; text-align: left; font-family: inherit; font-size: 15px;
+  background: var(--carta-2); color: var(--texto); border: 1px solid var(--borde);
+  border-radius: 14px; padding: 14px 16px; transition: border-color 0.15s, transform 0.1s;
+}
+.opcion:hover, .opcion:focus-visible { border-color: var(--celeste); }
+.opcion:active { transform: scale(0.98); }
+.opcion .texto-op { font-weight: 700; }
+
+/* ---------- FINAL ---------- */
+.final .acta-final {
+  background: linear-gradient(165deg, var(--carta), #10141c 70%);
+  border: 1px solid var(--celeste-osc); border-radius: 20px; padding: 26px 22px;
+  position: relative; overflow: hidden; margin-bottom: 16px;
+}
+.final .acta-final::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 90% 40% at 50% -10%, rgba(117, 170, 219, 0.18), transparent);
+  pointer-events: none;
+}
+.final .veredicto { text-align: center; margin-bottom: 18px; }
+.final .veredicto .emoji { font-size: 44px; }
+.final .veredicto h2 { font-size: 24px; margin: 6px 0 6px; }
+.final .veredicto .texto-veredicto { color: var(--texto-2); font-size: 14px; }
+.final .puntaje {
+  text-align: center; margin: 16px 0; font-variant-numeric: tabular-nums;
+}
+.final .puntaje .num { font-size: 46px; font-weight: 900; color: var(--sol); line-height: 1; }
+.final .puntaje .de { color: var(--texto-2); font-size: 14px; }
+.final .vida-frase { text-align: center; font-style: italic; color: var(--celeste); font-size: 15px; margin: 14px 0; }
+.final .anios-vida { text-align: center; font-size: 15px; color: var(--texto-2); margin-bottom: 14px; }
+.resumen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.resumen-item {
+  background: rgba(29, 32, 38, 0.7); border: 1px solid var(--borde); border-radius: 12px;
+  padding: 10px 12px; font-size: 14px;
+}
+.resumen-item .campo { font-size: 11px; color: var(--texto-2); text-transform: uppercase; letter-spacing: 0.08em; }
+.resumen-item .valor { font-weight: 700; margin-top: 2px; }
+.final .botones { display: flex; flex-direction: column; gap: 10px; align-items: stretch; text-align: center; }
+.final .semilla { text-align: center; color: var(--texto-2); font-size: 12px; margin-top: 14px; }
+.final .semilla code { color: var(--celeste); }
+
+.aviso-copiado {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--exito); color: #0b0c0e; font-weight: 800; font-size: 14px;
+  padding: 10px 20px; border-radius: 999px; z-index: 100; display: none;
+}
+.aviso-copiado.visible { display: block; animation: aparecer 0.25s ease; }
+
+.controles-vida { position: fixed; bottom: 16px; right: 16px; z-index: 40; }
+.controles-vida .boton { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5); }
+
+@media (min-width: 560px) {
+  .portada h1 { font-size: 64px; }
+}

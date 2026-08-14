@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ARGENTERO — ¿Le ganás a nacer argentino?</title>
+  <meta name="description" content="Nacés en un año, un lugar y una clase social que no elegís. Después: estadística real de censos y un buen dado de 12 caras. A ver si le ganás a nacer argentino.">
+  <meta property="og:title" content="ARGENTERO — ¿Le ganás a nacer argentino?">
+  <meta property="og:description" content="No elegís nada: te toca. Año, lugar, clase social y un d12. Basado en estadísticas reales.">
+  <meta name="theme-color" content="#0b0c0e">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎲</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- PORTADA -->
+    <section id="pantalla-portada" class="pantalla activa portada">
+      <div class="sol">☀️</div>
+      <h1 id="portada-titulo">ARGENTERO</h1>
+      <div class="bajada" id="portada-bajada">¿Le ganás a nacer argentino?</div>
+      <p class="explicacion" id="portada-explicacion"></p>
+      <button class="boton" id="btn-nacer">NACER 🎲</button>
+      <p class="disclaimer" id="portada-disclaimer"></p>
+    </section>
+
+    <!-- NACIMIENTO -->
+    <section id="pantalla-nacimiento" class="pantalla">
+      <div id="nacimiento-dado" class="dado-wrap"></div>
+      <div id="acta-nacimiento" class="acta"></div>
+      <div style="text-align:center">
+        <button class="boton" id="btn-vivir" style="display:none">Vivir esta vida →</button>
+      </div>
+    </section>
+
+    <!-- VIDA -->
+    <section id="pantalla-vida" class="pantalla">
+      <div class="hud">
+        <div class="quien">
+          <span class="nombre" id="hud-nombre"></span>
+          <span class="anio-actual" id="hud-anio"></span>
+        </div>
+        <div class="barras">
+          <div class="barra plata" id="barra-plata">
+            <div class="etiqueta"><span>💵 Plata</span><b>0</b></div>
+            <div class="pista"><div class="relleno" style="width:0%"></div></div>
+          </div>
+          <div class="barra salud" id="barra-salud">
+            <div class="etiqueta"><span>❤️ Salud</span><b>0</b></div>
+            <div class="pista"><div class="relleno" style="width:0%"></div></div>
+          </div>
+          <div class="barra felicidad" id="barra-felicidad">
+            <div class="etiqueta"><span>😄 Felicidad</span><b>0</b></div>
+            <div class="pista"><div class="relleno" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+      <div id="timeline" class="timeline"></div>
+      <div class="controles-vida">
+        <button class="boton secundario chico" id="btn-velocidad">⏩ rápido</button>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section id="pantalla-final" class="pantalla final">
+      <div id="final-contenido"></div>
+      <div class="botones">
+        <button class="boton" id="btn-compartir">Compartir 📤</button>
+        <button class="boton secundario" id="btn-denuevo">Nacer de nuevo 🎲</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- OVERLAY: tirada de dado -->
+  <div id="overlay-dado" class="overlay">
+    <div class="caja">
+      <h3></h3>
+      <p class="intro"></p>
+      <div class="dado-zona dado-wrap"></div>
+      <div class="dado-cuenta"></div>
+      <div class="resultado-texto"></div>
+    </div>
+  </div>
+
+  <!-- OVERLAY: decisión -->
+  <div id="overlay-decision" class="overlay">
+    <div class="caja">
+      <h3></h3>
+      <p class="intro"></p>
+      <div class="opciones"></div>
+    </div>
+  </div>
+
+  <div id="aviso-copiado" class="aviso-copiado">Copiado ✓</div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
