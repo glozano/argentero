@@ -44,7 +44,6 @@ async function jugar(seed) {
   const share = ui.pintarFinal(vida, seed, urlBase);
   $('#btn-compartir').onclick = () => ui.compartir(share);
   $('#btn-denuevo').onclick = () => { location.href = location.pathname; };
-  history.replaceState(null, '', `?v=${(seed >>> 0).toString(36).toUpperCase()}`);
   corriendo = false;
 }
 
@@ -55,13 +54,20 @@ function init() {
   $('#btn-nacer').textContent = UI.portada.boton;
   $('#portada-disclaimer').textContent = `${UI.disclaimers.fuentes} ${UI.disclaimers.satira}`;
 
-  const semillaUrl = textoASemilla(new URLSearchParams(location.search).get('v'));
-  $('#btn-nacer').onclick = () => jugar(semillaUrl || semillaAleatoria());
+  // la semilla de la URL se usa UNA sola vez (revivir una vida compartida);
+  // después, cada nacimiento es puro azar
+  let semillaUrl = textoASemilla(new URLSearchParams(location.search).get('v'));
+  $('#btn-nacer').onclick = () => {
+    const s = semillaUrl || semillaAleatoria();
+    semillaUrl = null;
+    history.replaceState(null, '', location.pathname);
+    jugar(s);
+  };
 
   $('#btn-velocidad').onclick = () => {
-    const rapido = ui.VELOCIDAD === 1;
-    ui.setVelocidad(rapido ? 2.4 : 1);
-    $('#btn-velocidad').textContent = rapido ? '▶ normal' : '⏩ rápido';
+    const auto = !ui.AUTO;
+    ui.setAuto(auto);
+    $('#btn-velocidad').textContent = auto ? '⏸ manual' : '▶ auto';
   };
 }
 

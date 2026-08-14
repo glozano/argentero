@@ -5,8 +5,23 @@ import { semillaATexto } from './rng.js';
 
 const $ = (sel) => document.querySelector(sel);
 export let VELOCIDAD = 1; // 1 normal, 2 rápido
+export let AUTO = false;  // false: el jugador avanza con "Seguir"
 
 const espera = (ms) => new Promise(r => setTimeout(r, ms / VELOCIDAD));
+
+// pausa entre momentos: en manual espera el toque; en auto, el reloj
+function pausa(ms) {
+  if (AUTO) return espera(ms);
+  return esperarSeguir();
+}
+
+function esperarSeguir() {
+  return new Promise(resolve => {
+    const b = $('#btn-seguir');
+    b.classList.add('visible');
+    b.onclick = () => { b.classList.remove('visible'); resolve(); };
+  });
+}
 
 export function mostrarPantalla(id) {
   document.querySelectorAll('.pantalla').forEach(p => p.classList.remove('activa'));
@@ -139,7 +154,7 @@ export async function renderMomento(m, nacimiento) {
         <div class="texto">${m.texto}</div>
         ${m.tono === 'sobrio' ? '' : chipsEfectos(m.efectos)}
       </div>`);
-    await espera(760);
+    await pausa(760);
   } else if (m.tipo === 'decision') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento decision-log">
@@ -148,21 +163,21 @@ export async function renderMomento(m, nacimiento) {
         ${m.texto ? `<div class="texto" style="margin-top:4px">${m.texto}</div>` : ''}
         ${chipsEfectos(m.efectos)}
       </div>`);
-    await espera(700);
+    await pausa(700);
   } else if (m.tipo === 'muerte') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento muerte">
         <div class="meta">${m.anio} · ${m.edad} años</div>
         <div class="texto">${m.texto}</div>
       </div>`);
-    await espera(1400);
+    await pausa(1400);
   } else if (m.tipo === 'hito') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento hito">
         <div class="meta">${meta}</div>
         <div class="texto">${m.texto}</div>
       </div>`);
-    await espera(900);
+    await pausa(900);
   }
 
   $('#hud-anio').textContent = m.anio;
@@ -184,7 +199,13 @@ async function tiradaConOverlay(m) {
   if (m.tirada.crit === 12) { resTxt.textContent = '¡DOCE!'; resTxt.classList.add('crit'); }
   else if (m.tirada.crit === 1) { resTxt.textContent = 'Uno. Uf.'; resTxt.classList.add('pifia'); }
   else resTxt.textContent = m.tirada.exito ? '✓ Salió bien' : '✗ No salió';
-  await espera(1250);
+  if (AUTO) {
+    await espera(1250);
+  } else {
+    const b = $('#btn-seguir-dado');
+    b.style.display = 'inline-block';
+    await new Promise(r => { b.onclick = () => { b.style.display = 'none'; r(); }; });
+  }
   ov.classList.remove('visible');
 }
 
@@ -288,3 +309,4 @@ function avisoCopiado() {
 }
 
 export function setVelocidad(v) { VELOCIDAD = v; }
+export function setAuto(v) { AUTO = v; VELOCIDAD = v ? 1.8 : 1; }
