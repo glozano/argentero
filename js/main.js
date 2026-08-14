@@ -1,8 +1,8 @@
 // Bootstrap: pantallas, semilla en URL, y el hilo de una vida.
-import { crearRng, semillaAleatoria, textoASemilla } from './rng.js';
-import { nacer, simularVida } from './engine.js';
-import * as ui from './ui.js';
-import { UI } from './data/textos.js';
+import { crearRng, semillaAleatoria, textoASemilla } from './rng.js?v=2';
+import { nacer, simularVida } from './engine.js?v=2';
+import * as ui from './ui.js?v=2';
+import { UI } from './data/textos.js?v=2';
 
 const $ = (sel) => document.querySelector(sel);
 const urlBase = location.protocol === 'file:'

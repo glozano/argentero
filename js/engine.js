@@ -4,10 +4,10 @@ import {
   MORTALIDAD_INFANTIL, MULT_MORT_REGION, MULT_MORT_CLASE, ESPERANZA_VIDA,
   TGF, AJUSTE_HERMANOS, MOD_CLASE, MOD_REGION_EDU, PLATA_INICIAL,
   PRESIDENTES, MUNDIALES, CUADROS_BASE, CUADROS_PROVINCIA, buscarEnBandas, buscarRango,
-} from './data/tablas.js';
-import { HISTORIA } from './data/historia.js';
-import { EVENTOS, DECISIONES } from './data/eventos.js';
-import { NOMBRES, LOCALIDADES, CAUSAS_MUERTE, VEREDICTOS, FRASES_CLASE } from './data/textos.js';
+} from './data/tablas.js?v=2';
+import { HISTORIA } from './data/historia.js?v=2';
+import { EVENTOS, DECISIONES } from './data/eventos.js?v=2';
+import { NOMBRES, LOCALIDADES, CAUSAS_MUERTE, VEREDICTOS, FRASES_CLASE } from './data/textos.js?v=2';
 
 export const ANIO_ACTUAL = 2026;
 

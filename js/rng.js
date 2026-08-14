@@ -39,6 +39,7 @@ export function semillaAleatoria() {
 export function semillaATexto(seed) { return (seed >>> 0).toString(36).toUpperCase(); }
 
 export function textoASemilla(txt) {
-  const n = parseInt(String(txt).toLowerCase(), 36);
+  if (!txt || typeof txt !== 'string') return null; // ojo: parseInt('null', 36) es un número válido
+  const n = parseInt(txt.toLowerCase(), 36);
   return Number.isFinite(n) && n > 0 ? (n >>> 0) : null;
 }

@@ -1,7 +1,7 @@
 // Render y ritmo del juego. Sin lógica de simulación: eso vive en engine.js.
-import { UI, SHARE_TPL, FRASES_CLASE } from './data/textos.js';
-import { fraseNacimiento, ETAPAS, ANIO_ACTUAL } from './engine.js';
-import { semillaATexto } from './rng.js';
+import { UI, SHARE_TPL, FRASES_CLASE } from './data/textos.js?v=2';
+import { fraseNacimiento, ETAPAS, ANIO_ACTUAL } from './engine.js?v=2';
+import { semillaATexto } from './rng.js?v=2';
 
 const $ = (sel) => document.querySelector(sel);
 export let VELOCIDAD = 1; // 1 normal, 2 rápido

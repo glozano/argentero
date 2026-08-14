@@ -1,7 +1,7 @@
 // Tests del motor: node --test tests/
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { crearRng } from '../js/rng.js';
+import { crearRng, textoASemilla, semillaATexto } from '../js/rng.js';
 import { nacer, simularVida } from '../js/engine.js';
 import { PROVINCIAS } from '../js/data/tablas.js';
 import { HISTORIA } from '../js/data/historia.js';
@@ -12,6 +12,15 @@ const vidaRapida = (seed) => {
   const rng = crearRng(seed);
   return simularVida(nacer(rng), rng, {});
 };
+
+test('la semilla de URL no inventa vidas: null/basura dan null', () => {
+  assert.equal(textoASemilla(null), null);       // parseInt('null', 36) era un número válido
+  assert.equal(textoASemilla(undefined), null);
+  assert.equal(textoASemilla(''), null);
+  assert.equal(textoASemilla('!!!'), null);
+  const s = 123456789;
+  assert.equal(textoASemilla(semillaATexto(s)), s); // ida y vuelta
+});
 
 test('sorteo de nacimiento sigue las distribuciones reales', () => {
   const rng = crearRng(123456);
