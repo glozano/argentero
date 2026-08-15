@@ -1,7 +1,7 @@
 // Render y ritmo del juego. Sin lógica de simulación: eso vive en engine.js.
-import { UI, SHARE_TPL, FRASES_CLASE } from './data/textos.js?v=3';
-import { fraseNacimiento, ETAPAS, ANIO_ACTUAL } from './engine.js?v=3';
-import { semillaATexto } from './rng.js?v=3';
+import { UI, SHARE_TPL, FRASES_CLASE } from './data/textos.js?v=4';
+import { fraseNacimiento, ETAPAS, ANIO_ACTUAL } from './engine.js?v=4';
+import { semillaATexto } from './rng.js?v=4';
 
 const $ = (sel) => document.querySelector(sel);
 export let VELOCIDAD = 1; // 1 normal, 2 rápido
@@ -9,15 +9,11 @@ export let AUTO = false;  // false: el jugador avanza con "Seguir"
 
 const espera = (ms) => new Promise(r => setTimeout(r, ms / VELOCIDAD));
 
-// pausa entre momentos: en manual espera el panel; en auto, el reloj
-function pausa(ms, detalle = '') {
-  if (AUTO) {
-    mostrarPanel(`
-      <div class="accion-kicker">Resultado</div>
-      <div class="accion-texto">${detalle || 'La vida sigue.'}</div>`);
-    return espera(ms);
-  }
-  return esperarSeguir(detalle);
+// pausa entre momentos: el momento ya está dibujado en el timeline, así que el
+// panel NO lo repite. En manual muestra solo "Continuar"; en auto se esconde.
+function pausa(ms) {
+  if (AUTO) { ocultarPanel(); return espera(ms); }
+  return esperarSeguir();
 }
 
 function mostrarPanel(html) {
@@ -27,14 +23,45 @@ function mostrarPanel(html) {
   return panel;
 }
 
-function esperarSeguir(detalle = '') {
+function ocultarPanel() {
+  const panel = $('#accion-vida');
+  panel.classList.remove('activo');
+  panel.innerHTML = '';
+}
+
+function esperarSeguir() {
   return new Promise(resolve => {
-    const panel = mostrarPanel(`
-      <div class="accion-kicker">Resultado</div>
-      <div class="accion-texto">${detalle || 'La vida sigue. Elegí cuándo avanzar.'}</div>
-      <button class="boton chico" id="btn-seguir">Continuar ▸</button>`);
-    panel.querySelector('#btn-seguir').onclick = resolve;
+    const panel = mostrarPanel(`<button class="boton chico" id="btn-seguir">Continuar ▸</button>`);
+    panel.classList.add('solo-boton');
+    panel.querySelector('#btn-seguir').onclick = () => { panel.classList.remove('solo-boton'); resolve(); };
   });
+}
+
+// El timeline siempre termina mostrando lo último que pasó. Se hace en el
+// próximo frame (para que el DOM recién insertado ya tenga alto) y contra el
+// último elemento real: en mobile el timeline no scrollea, scrollea la página,
+// y hay una hoja fija abajo que no debe tapar el último momento.
+export function scrollAlFinal(suave = true) {
+  const hacer = () => {
+    const tl = $('#timeline');
+    const behavior = suave ? 'smooth' : 'auto';
+    if (tl.scrollHeight > tl.clientHeight) { // desktop: scrollea el timeline
+      tl.scrollTo({ top: tl.scrollHeight, behavior });
+      return;
+    }
+    // mobile: la hoja de acción es fija abajo; reservamos exactamente su alto
+    // como padding del timeline y llevamos la página al fondo.
+    const hoja = $('#accion-vida');
+    const fija = hoja.classList.contains('activo') && getComputedStyle(hoja).position === 'fixed';
+    tl.style.paddingBottom = fija ? `${Math.ceil(hoja.getBoundingClientRect().height) + 24}px` : '';
+    const objetivo = document.documentElement.scrollHeight - window.innerHeight;
+    window.scrollTo({ top: Math.max(0, objetivo), behavior });
+  };
+  // dos pasadas: una apenas se pinta el DOM nuevo y otra cuando terminó de
+  // asentarse el layout (imágenes/fuentes/altura de la hoja), así nunca queda
+  // el último momento tapado por la hoja.
+  requestAnimationFrame(hacer);
+  setTimeout(hacer, 220);
 }
 
 export function mostrarPantalla(id) {
@@ -208,7 +235,7 @@ export async function renderMomento(m, nacimiento) {
         <div class="texto">${m.texto}</div>
         ${m.tono === 'sobrio' ? '' : chipsEfectos(m.efectos)}
       </div>`);
-    await pausa(760, m.texto);
+    scrollAlFinal(); await pausa(760);
   } else if (m.tipo === 'decision') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento decision-log">
@@ -217,28 +244,27 @@ export async function renderMomento(m, nacimiento) {
         ${m.texto ? `<div class="texto" style="margin-top:4px">${m.texto}</div>` : ''}
         ${chipsEfectos(m.efectos)}
       </div>`);
-    await pausa(700, m.texto);
+    scrollAlFinal(); await pausa(700);
   } else if (m.tipo === 'muerte') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento muerte">
         <div class="meta">${m.anio} · ${m.edad} años</div>
         <div class="texto">${m.texto}</div>
       </div>`);
-    await pausa(1400, m.texto);
+    scrollAlFinal(); await pausa(1400);
   } else if (m.tipo === 'hito') {
     tl.insertAdjacentHTML('beforeend', `
       <div class="momento hito">
         <div class="meta">${meta}</div>
         <div class="texto">${m.texto}</div>
       </div>`);
-    await pausa(900, m.texto);
+    scrollAlFinal(); await pausa(900);
   }
 
   $('#hud-anio').textContent = m.anio;
   if (m.stats) pintarBarras(m.stats);
   pintarPerfil(nacimiento, m.estado);
-  if (tl.scrollHeight > tl.clientHeight) tl.scrollTo({ top: tl.scrollHeight, behavior: 'smooth' });
-  else window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  scrollAlFinal();
 }
 
 async function tiradaConPanel(m) {
@@ -251,6 +277,7 @@ async function tiradaConPanel(m) {
     <div class="resultado-texto"></div>
     <button class="boton chico" id="btn-tirar-dado">Tirar dado</button>`);
   const lanzar = panel.querySelector('#btn-tirar-dado');
+  scrollAlFinal();
   if (!AUTO) await new Promise(resolve => { lanzar.onclick = resolve; });
   await animarDado(panel.querySelector('.dado-zona'), m.tirada.d);
   panel.querySelector('.dado-cuenta').innerHTML = cuentaHtml(m.tirada);
@@ -264,6 +291,7 @@ async function tiradaConPanel(m) {
   } else {
     await new Promise(resolve => { lanzar.onclick = resolve; });
   }
+  ocultarPanel();
 }
 
 // ---------- DECISIONES ----------
@@ -280,9 +308,10 @@ export function pedirDecision(dec) {
       const btn = document.createElement('button');
       btn.className = 'opcion';
       btn.innerHTML = `<span class="texto-op">${op.texto}</span>`;
-      btn.onclick = () => resolve(op);
+      btn.onclick = () => { ocultarPanel(); resolve(op); };
       cont.appendChild(btn);
     });
+    scrollAlFinal();
   });
 }
 

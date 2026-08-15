@@ -145,6 +145,7 @@ body::before { /* trama sutil de fondo */
   border-radius: var(--radio); padding: 15px; box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.22);
 }
 .accion-vida.activo { display: block; }
+.accion-vida.solo-boton { padding: 10px; text-align: center; border-color: var(--borde); box-shadow: none; }
 .accion-vida h3 { font-size: 17px; margin: 3px 0 4px; }
 .accion-kicker {
   color: var(--celeste); font-size: 11px; font-weight: 800; letter-spacing: 0.14em;
@@ -287,6 +288,9 @@ body::before { /* trama sutil de fondo */
     min-width: 0; overflow-y: auto; padding-right: 16px; border-right: 1px solid var(--borde);
   }
   .vida-sidebar .hud { position: static; }
+  .vida-sidebar.colapsado .perfil-vida,
+  .vida-sidebar.colapsado .controles-vida { display: block; }
+  .perfil-toggle { display: none; }
   .vida-main { display: flex; flex-direction: column; min-height: 0; padding-left: 0; }
   .vida-main .timeline { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 12px 18px 0; }
   .accion-vida { flex: 0 0 auto; position: static; margin-top: 10px; }

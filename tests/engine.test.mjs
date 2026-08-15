@@ -23,6 +23,22 @@ test('la semilla de URL no inventa vidas: null/basura dan null', () => {
   assert.equal(textoASemilla(semillaATexto(s)), s); // ida y vuelta
 });
 
+test('semillas vecinas dan vidas distintas (la primera tirada no es lineal en la semilla)', () => {
+  // antes: seeds 1000..1019 => primer random 0.0620, 0.0619, 0.0618... y el año casi igual
+  const anios = new Set(), primeros = [];
+  for (let s = 1000; s < 1020; s++) {
+    const rng = crearRng(s);
+    primeros.push(rng.random());
+    anios.add(nacer(crearRng(s)).anio);
+  }
+  assert.ok(anios.size >= 8, `20 semillas vecinas dieron solo ${anios.size} años distintos`);
+  const ordenados = primeros.every((v, i) => i === 0 || Math.abs(v - primeros[i - 1]) < 0.01);
+  assert.ok(!ordenados, 'los primeros randoms de semillas vecinas siguen siendo casi iguales');
+  // y por texto: DANI1/DANI2/DANI3 no pueden dar el mismo año
+  const porTexto = new Set(['DANI1', 'DANI2', 'DANI3', 'AAAA', 'AAAB'].map(t => nacer(crearRng(textoASemilla(t))).anio));
+  assert.ok(porTexto.size >= 3, `seeds de texto vecinas: ${[...porTexto]}`);
+});
+
 test('sorteo de nacimiento sigue las distribuciones reales', () => {
   const rng = crearRng(123456);
   const N = 10000;

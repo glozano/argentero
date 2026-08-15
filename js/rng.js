@@ -1,8 +1,19 @@
 // RNG sembrado (xorshift32). Toda la aleatoriedad del juego pasa por acá:
 // misma semilla => misma vida (URL ?v=SEMILLA).
 
+// Mezcla la semilla (finalizador murmur3) antes de arrancar xorshift: sin esto,
+// la primera salida es casi lineal en la semilla y semillas vecinas
+// (AAAA/AAAB, DANI1/DANI2) daban el mismo año de nacimiento.
+function mezclar(x) {
+  x = x >>> 0;
+  x ^= x >>> 16; x = Math.imul(x, 0x85ebca6b) >>> 0;
+  x ^= x >>> 13; x = Math.imul(x, 0xc2b2ae35) >>> 0;
+  x ^= x >>> 16;
+  return x >>> 0;
+}
+
 export function crearRng(seed) {
-  let s = seed >>> 0;
+  let s = mezclar(seed);
   if (s === 0) s = 0x9e3779b9;
   const next = () => {
     s ^= s << 13; s >>>= 0;
